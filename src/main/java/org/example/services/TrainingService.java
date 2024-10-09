@@ -11,6 +11,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TrainingService {
@@ -18,7 +19,7 @@ public class TrainingService {
     private GenericDAO<Training> dao;
     private long nextId;
 
-    public void create(long traineeId, long trainerId, String trainingName, TrainingType type, LocalDateTime trainingDate, Duration duration){
+    public Training create(long traineeId, long trainerId, String trainingName, TrainingType type, LocalDateTime trainingDate, Duration duration){
         Training training=new Training();
         long id=++nextId;
         training.setTrainingId(id);
@@ -28,11 +29,26 @@ public class TrainingService {
         training.setTrainingType(type);
         training.setTrainingDate(trainingDate);
         training.setTrainingDuration(duration);
-        dao.save(training,id);
+        return dao.save(training,id);
     }
 
     public Training selectByTrainingId(long trainingId){
         return dao.findById(trainingId);
+    }
+    public List<Training> selectByTrainerId(long trainerId){
+        return getAll().stream()
+                .filter(training -> training.getTrainerId() == trainerId)
+                .collect(Collectors.toList());
+    }
+    public List<Training> selectByTraineeId(long traineeId){
+        return getAll().stream()
+                .filter(training -> training.getTraineeId() == traineeId)
+                .collect(Collectors.toList());
+    }
+    public List<Training> selectByPeriod(LocalDateTime dataFrom,LocalDateTime dataTo){
+        return getAll().stream()
+                .filter(training -> training.getTrainingDate().isAfter(dataFrom)&&training.getTrainingDate().isBefore(dataTo))
+                .collect(Collectors.toList());
     }
 
     public List<Training> getAll(){

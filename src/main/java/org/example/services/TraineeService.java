@@ -18,7 +18,7 @@ public class TraineeService {
     private GenericDAO<Trainee> dao;
     private long nextId;
 
-    public void create(String firstName, String lastName, String address, LocalDate dateOfBirth){
+    public Trainee create(String firstName, String lastName, String address, LocalDate dateOfBirth){
         Trainee trainee=new Trainee();
         long id=++nextId;
         trainee.setUserId(id);
@@ -37,23 +37,21 @@ public class TraineeService {
         trainee.setPassword(password);
         trainee.setAddress(address);
         trainee.setDateOfBirth(dateOfBirth);
-        dao.save(trainee,id);
+        return dao.save(trainee,id);
     }
     public Optional<Trainee> selectById(long id){
-        return Optional.ofNullable(dao.getAll().get(id));
+        return Optional.ofNullable(dao.findById(id));
     }
     public Optional<Trainee> selectByUsername(String username){
         return getAll().stream().filter(el->el.getUsername().equals(username)).findFirst();
     }
-    public void update(String firstName, String lastName,  String userName, String address, LocalDate dateOfBirth ,boolean isActive){
+    public void update(String firstName, String lastName,  String userName, String address, LocalDate dateOfBirth ,boolean isActive) throws IllegalArgumentException{
         Trainee trainee=selectByUsername(userName).orElseThrow(()->new IllegalArgumentException("Trainee with username: " + userName + " not found."));
-                    long id = trainee.getUserId();
                     trainee.setFirstName(firstName);
                     trainee.setLastName(lastName);
                     trainee.setAddress(address);
                     trainee.setDateOfBirth(dateOfBirth);
                     trainee.setActive(isActive);
-                    dao.save(trainee, id);
     }
 
     public void delete(String userName){

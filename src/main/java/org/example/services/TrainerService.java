@@ -17,7 +17,7 @@ public class TrainerService {
     private GenericDAO<Trainer> dao;
     private long nextId;
 
-    public void create(String firstName, String lastName, TrainingType specialization){
+    public Trainer create(String firstName, String lastName, TrainingType specialization){
         Trainer trainer=new Trainer();
         long id=++nextId;
         trainer.setUserId(id);
@@ -35,19 +35,21 @@ public class TrainerService {
         String password=trainer.madePassword();
         trainer.setPassword(password);
         trainer.setSpecialization(specialization);
-        dao.save(trainer,id);
+        return dao.save(trainer,id);
+    }
+    public Optional<Trainer> selectById(long id){
+        return Optional.ofNullable(dao.findById(id));
     }
     public Optional<Trainer> selectByUsername(String username){
         return getAll().stream().filter(el->el.getUsername().equals(username)).findFirst();
     }
 
-    public void update(String firstName, String lastName,  String userName, TrainingType specialization,boolean isActive){
+    public void update (String firstName, String lastName,  String userName, TrainingType specialization,boolean isActive) throws IllegalArgumentException{
         Trainer trainer=selectByUsername(userName).orElseThrow(()->new IllegalArgumentException("Trainer with username: " + userName + " not found."));
-        long id=trainer.getUserId();
         trainer.setFirstName(firstName);
         trainer.setLastName(lastName);
+        trainer.setSpecialization(specialization);
         trainer.setActive(isActive);
-        dao.save(trainer,id);
     }
     public List<Trainer> getAll(){
         return new ArrayList<>(dao.getAll().values());
