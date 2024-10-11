@@ -1,0 +1,5 @@
+trainingId,traineeId,trainerId,trainingName,trainingType,trainingDate,trainingDuration,expected
+1,2,3,Sunday morning training,STRETCHING,2022-12-09T18:19:26,PT1H30M15S,"Training{id=1, traineeId=2, trainerId=3, name='Sunday morning training', type=STRETCHING, date=2022-12-09 18:19:26, duration=01:30:15}"
+2,2,4,Outside workout,FITNESS,2024-10-07T22:04:44,PT1H30M,"Training{id=2, traineeId=2, trainerId=4, name='Outside workout', type=FITNESS, date=2024-10-07 22:04:44, duration=01:30:00}"
+3,3,2,Sunday morning training,STRETCHING,2022-12-09T18:19:26,PT1H30M15S,"Training{id=3, traineeId=3, trainerId=2, name='Sunday morning training', type=STRETCHING, date=2022-12-09 18:19:26, duration=01:30:15}"
+4,3,4,Outside workout,FITNESS,2024-10-07T22:04:44,PT1H30M,"Training{id=4, traineeId=3, trainerId=4, name='Outside workout', type=FITNESS, date=2024-10-07 22:04:44, duration=01:30:00}"
