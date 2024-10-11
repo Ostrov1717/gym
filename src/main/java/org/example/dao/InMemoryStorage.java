@@ -67,7 +67,6 @@ public class InMemoryStorage implements Storage {
     }
     @PostConstruct
     public void init(){
-        System.out.println(initFilePath);
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(initFilePath)))) {
             String line;
             while ((line = reader.readLine()) != null) {
