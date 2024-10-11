@@ -10,7 +10,7 @@ abstract class User {
     private String lastName;
     private String username;
     private String password;
-    private boolean isActive;
+    private boolean active;
 
     public User(){}
     public User(String firstName, String lastName, String username, String password, boolean isActive) {
@@ -18,7 +18,7 @@ abstract class User {
         this.lastName = lastName;
         this.username = username;
         this.password = password;
-        this.isActive = isActive;
+        this.active = isActive;
     }
 
     public String getFirstName() {
@@ -54,11 +54,11 @@ abstract class User {
     }
 
     public boolean isActive() {
-        return isActive;
+        return active;
     }
 
     public void setActive(boolean active) {
-        isActive = active;
+        this.active = active;
     }
     public String madePassword(){
         Random random=new Random();
@@ -77,7 +77,7 @@ abstract class User {
 
         User user = (User) o;
 
-        if (isActive != user.isActive) return false;
+        if (active != user.active) return false;
         if (!Objects.equals(firstName, user.firstName)) return false;
         if (!Objects.equals(lastName, user.lastName)) return false;
         if (!Objects.equals(username, user.username)) return false;
@@ -90,7 +90,7 @@ abstract class User {
         result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
         result = 31 * result + (username != null ? username.hashCode() : 0);
         result = 31 * result + (password != null ? password.hashCode() : 0);
-        result = 31 * result + (isActive ? 1 : 0);
+        result = 31 * result + (active ? 1 : 0);
         return result;
     }
 
@@ -101,7 +101,7 @@ abstract class User {
         sb.append(", lastName='").append(lastName).append('\'');
         sb.append(", username='").append(username).append('\'');
         sb.append(", password='").append(password).append('\'');
-        sb.append(", isActive=").append(isActive);
+        sb.append(", isActive=").append(active);
         return sb.toString();
     }
 }

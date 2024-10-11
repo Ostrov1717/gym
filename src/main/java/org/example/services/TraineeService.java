@@ -19,6 +19,7 @@ public class TraineeService {
     private long nextId;
 
     public Trainee create(String firstName, String lastName, String address, LocalDate dateOfBirth){
+        if(firstName==null||firstName.isBlank()||lastName==null||lastName.isBlank()) throw new IllegalArgumentException("Trainee without firstname and lastname cannot be created !");
         Trainee trainee=new Trainee();
         long id=++nextId;
         trainee.setUserId(id);

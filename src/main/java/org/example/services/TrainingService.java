@@ -20,6 +20,12 @@ public class TrainingService {
     private long nextId;
 
     public Training create(long traineeId, long trainerId, String trainingName, TrainingType type, LocalDateTime trainingDate, Duration duration){
+        if (traineeId == 0) throw new IllegalArgumentException("Trainee Id cannot be zero.");
+        if (trainerId == 0) throw new IllegalArgumentException("Trainer Id cannot be zero.");
+        if (trainingName == null || trainingName.isBlank()) throw new IllegalArgumentException("Training name cannot be null or empty.");
+        if (type == null) throw new IllegalArgumentException("Training type cannot be null.");
+        if (trainingDate == null) throw new IllegalArgumentException("Training date cannot be null.");
+        if (duration == null) throw new IllegalArgumentException("Training duration cannot be null.");
         Training training=new Training();
         long id=++nextId;
         training.setTrainingId(id);

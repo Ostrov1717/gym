@@ -33,7 +33,8 @@ public class InMemoryStorage implements Storage {
         @Override
         public <T> T save(Class<T> entityClass, Long id, T entity) {
             Map<Long, Object> namespace = getNamespace(entityClass);
-            return entityClass.cast(namespace.put(id, entity));
+            namespace.put(id, entity);
+            return entity;
         }
 
         // Получение объекта по id и типу сущности

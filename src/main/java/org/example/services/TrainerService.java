@@ -18,6 +18,7 @@ public class TrainerService {
     private long nextId;
 
     public Trainer create(String firstName, String lastName, TrainingType specialization){
+        if(firstName==null||firstName.isBlank()||lastName==null||lastName.isBlank()) throw new IllegalArgumentException("Trainer without firstname and lastname cannot be created !");
         Trainer trainer=new Trainer();
         long id=++nextId;
         trainer.setUserId(id);

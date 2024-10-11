@@ -6,6 +6,10 @@ Trainer,5,Jack,Daniels,Jack.Daniels,PErgBhJZme,true,YOGA
 Trainee,1,Olga,Kurilenko,Olga.Kurilenko,LQMKLCAuMB,true,California,1989-10-05
 Trainee,2,Kim,Johnson,Kim.Johnson,pNlNsVXVHB,true,Chicago,1986-12-30
 Trainee,3,Tomas,Kuk,tomas.kuk,EHLrKwgqWk,true,Sweden Oslo,1972-02-01
-Trainee,4,George,The Third,George.TheThird,ZceqVAJXBK,true,UK,1962-05-05
+Trainee,4,George,TheThird,George.TheThird,ZceqVAJXBK,true,UK,1962-05-05
 Training,1,2,3,Sunday morning training,STRETCHING,2022-12-09T18:19:26,PT1H30M15S
 Training,2,2,4,Outside workout,FITNESS,2024-10-07T22:04:44,PT1H30M
+Training,3,3,2,Sunday morning training,STRETCHING,2022-12-09T18:19:26,PT1H30M15S
+Training,4,3,4,Outside workout,FITNESS,2024-10-07T22:04:44,PT1H30M
+Training,5,3,3,Sunday morning training,STRETCHING,2022-12-09T18:19:26,PT1H30M15S
+Training,6,3,5,Outside workout,FITNESS,2024-10-07T22:04:44,PT1H30M
