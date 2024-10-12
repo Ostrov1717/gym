@@ -1,15 +1,20 @@
 package org.example.dao;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Map;
 
 public class GenericDAO<T> {
 
         private final Storage storage;
         private final Class<T> entityClass;
+        private static final Logger logger = LoggerFactory.getLogger(InMemoryStorage.class);
 
         public GenericDAO(Storage storage, Class<T> entityClass) {
             this.storage = storage;
             this.entityClass = entityClass;
+            logger.info("GenericDAO<{}> bean have been created",entityClass.getSimpleName());
         }
 
         public T save(T entity, Long id) {
