@@ -9,12 +9,12 @@ public class GenericDAO<T> {
 
         private final Storage storage;
         private final Class<T> entityClass;
-        private static final Logger logger = LoggerFactory.getLogger(InMemoryStorage.class);
+        private static final Logger logger = LoggerFactory.getLogger(GenericDAO.class);
 
         public GenericDAO(Storage storage, Class<T> entityClass) {
             this.storage = storage;
             this.entityClass = entityClass;
-            logger.info("GenericDAO<{}> bean have been created",entityClass.getSimpleName());
+            logger.info("GenericDAO<{}> bean has been created",entityClass.getSimpleName());
         }
 
         public T save(T entity, Long id) {
