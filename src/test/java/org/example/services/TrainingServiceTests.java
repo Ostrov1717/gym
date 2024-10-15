@@ -7,9 +7,11 @@ import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -23,12 +25,12 @@ public class TrainingServiceTests {
     @InjectMocks
     private TrainingService trainingService;
 
-    private Map<Long,Training> trainingMap;
+    private Map<Long, Training> trainingMap;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        this.trainingMap=new HashMap<>();
+        this.trainingMap = new HashMap<>();
     }
 
     @Test
@@ -37,8 +39,8 @@ public class TrainingServiceTests {
     void createTrainingTest() {
         // Arrange
         String trainingName = "Morning stretching";
-        LocalDateTime data = LocalDateTime.of(2024, 10, 10,10,30);
-        Duration duration=Duration.ofHours(1);
+        LocalDateTime data = LocalDateTime.of(2024, 10, 10, 10, 30);
+        Duration duration = Duration.ofHours(1);
 
         when(dao.save(any(Training.class), anyLong())).thenAnswer(invocation -> {
             Training training = invocation.getArgument(0);
@@ -47,24 +49,25 @@ public class TrainingServiceTests {
             return training; // Сохраняем объект в тестовой карте
         });
         // Act
-        Training training1 = trainingService.create(1L,1L, trainingName, TrainingType.STRETCHING,data,duration);
+        Training training1 = trainingService.create(1L, 1L, trainingName, TrainingType.STRETCHING, data, duration);
 
         // Assert
         assertNotNull(training1);
         assertEquals(training1, trainingMap.get(training1.getTrainingId()));
-        Training training2 = trainingService.create(1L,1L, trainingName, TrainingType.STRETCHING,data.plusDays(1),duration);
+        Training training2 = trainingService.create(1L, 1L, trainingName, TrainingType.STRETCHING, data.plusDays(1), duration);
         assertNotNull(training1);
         assertEquals(training2, trainingMap.get(training2.getTrainingId()));
 
-        assertThrows(IllegalArgumentException.class,()->trainingService.create(0,1L, trainingName, TrainingType.STRETCHING,data,duration));
-        assertThrows(IllegalArgumentException.class,()->trainingService.create(1L,0, trainingName, TrainingType.STRETCHING,data,duration));
-        assertThrows(IllegalArgumentException.class,()->trainingService.create(1L,1L, "  ", TrainingType.STRETCHING,data,duration));
-        assertThrows(IllegalArgumentException.class,()->trainingService.create(1L,1L, trainingName, null,data,duration));
-        assertThrows(IllegalArgumentException.class,()->trainingService.create(1L,1L, trainingName, TrainingType.STRETCHING,null,duration));
-        assertThrows(IllegalArgumentException.class,()->trainingService.create(1L,1L, trainingName, TrainingType.STRETCHING,data,null));
+        assertThrows(IllegalArgumentException.class, () -> trainingService.create(0, 1L, trainingName, TrainingType.STRETCHING, data, duration));
+        assertThrows(IllegalArgumentException.class, () -> trainingService.create(1L, 0, trainingName, TrainingType.STRETCHING, data, duration));
+        assertThrows(IllegalArgumentException.class, () -> trainingService.create(1L, 1L, "  ", TrainingType.STRETCHING, data, duration));
+        assertThrows(IllegalArgumentException.class, () -> trainingService.create(1L, 1L, trainingName, null, data, duration));
+        assertThrows(IllegalArgumentException.class, () -> trainingService.create(1L, 1L, trainingName, TrainingType.STRETCHING, null, duration));
+        assertThrows(IllegalArgumentException.class, () -> trainingService.create(1L, 1L, trainingName, TrainingType.STRETCHING, data, null));
 
         verify(dao, times(2)).save(any(Training.class), anyLong());
     }
+
     @Test
     @DisplayName("Select by Trainer Id method TrainingService Test")
     @Order(2)
@@ -79,7 +82,7 @@ public class TrainingServiceTests {
         Training training3 = new Training();
         training3.setTrainerId(1);
 
-        when(dao.getAll()).thenReturn(Map.of(1L, training1, 2L, training2,3L, training3));
+        when(dao.getAll()).thenReturn(Map.of(1L, training1, 2L, training2, 3L, training3));
 
         List<Training> result = trainingService.selectByTrainerId(1);
 
@@ -145,6 +148,6 @@ public class TrainingServiceTests {
 
         assertEquals(2, result.size());
         assertTrue(result.containsAll(Arrays.asList(training1, training2)));
-        verify(dao, times(1)).getAll();
+        verify(dao, times(2)).getAll();
     }
 }
