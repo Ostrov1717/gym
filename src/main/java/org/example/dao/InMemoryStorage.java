@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -82,6 +83,7 @@ public class InMemoryStorage implements Storage {
     @PostConstruct
     public void init() {
         String[] paths = initFilePaths.split(",");
+        System.out.println(initFilePaths);
         List<Trainee> traineeList = readJson(Trainee.class, paths[0]);
         List<Trainer> trainerList = readJson(Trainer.class, paths[1]);
         List<Training> trainingList = readJson(Training.class, paths[2]);
@@ -92,13 +94,15 @@ public class InMemoryStorage implements Storage {
 
     private <T> List<T> readJson(Class<T> entityClass, String filePath) {
         log.info("Initializing storage from file: {}", filePath);
-        File jsonFile = new File(filePath);
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
+        ClassLoader classLoader = getClass().getClassLoader();
+        var resource = classLoader.getResource(filePath);
         List<T> entities = new ArrayList<>();
         try {
+            File jsonFile = new File(resource.toURI());
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
             entities = objectMapper.readValue(jsonFile, objectMapper.getTypeFactory().constructCollectionType(List.class, entityClass));
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             log.error("Failed to initialize storage from file: {}", filePath, e);
         }
         log.info("Storage {} successfully initialized from file: {}\n", entityClass, filePath);
