@@ -1,5 +1,6 @@
 package org.example.services;
 
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.example.model.Trainee;
 import org.example.model.Trainer;
@@ -27,79 +28,49 @@ public class Facade {
         this.trainingService = trainingService;
     }
 
-    public String getTraineeTrainingList(String traineeUsername, LocalDateTime dataFrom, LocalDateTime dataTo) {
-        log.info("Fetching training list for trainee: {}, from: {}, to: {}", traineeUsername, dataFrom, dataTo);
-        Trainee trainee = traineeService.selectByUsername(traineeUsername).orElseThrow(() -> {
-            log.error("Trainee with username: {} not found", traineeUsername);
-            return new IllegalArgumentException("Trainee with username: " + traineeUsername + " not found.");
-        });
-        List<Training> trainingList;
-        if (dataFrom != null && dataTo != null) {
-            log.debug("Selecting trainings for trainee {} within the period: {} - {}", traineeUsername, dataFrom, dataTo);
-            trainingList = trainingService.selectByPeriod(dataFrom, dataTo)
-                    .stream()
-                    .filter(tr -> tr.getTraineeId() == trainee.getUserId())
-                    .sorted(Comparator.comparing(Training::getTrainingDate))
-                    .toList();
-        } else {
-            log.debug("Selecting all trainings for trainee {}", traineeUsername);
-            trainingList = trainingService.selectByTraineeId(trainee.getUserId());
-        }
-        String result=traineeTrainingList(trainingList,trainee);
-        log.info("Successfully retrieved training list for trainee: {}\n", traineeUsername);
-        return result;
-    }
-    public String getTrainerTrainingList(String trainerUsername, LocalDateTime dataFrom, LocalDateTime dataTo) {
-        log.info("Fetching training list for trainer: {}, from: {}, to: {}", trainerUsername, dataFrom, dataTo);
-        Trainer trainer = trainerService.selectByUsername(trainerUsername).orElseThrow(() -> {
-            log.error("Trainer with username: {} not found", trainerUsername);
-            return new IllegalArgumentException("Trainer with username: " + trainerUsername + " not found.");
-        });
-        List<Training> trainingList;
-        if (dataFrom != null && dataTo != null) {
-            log.debug("Selecting trainings for trainer {} within the period: {} - {}", trainerUsername, dataFrom, dataTo);
-            trainingList = trainingService.selectByPeriod(dataFrom, dataTo)
-                    .stream()
-                    .filter(tr -> tr.getTrainerId() == trainer.getUserId())
-                    .sorted(Comparator.comparing(Training::getTrainingDate))
-                    .toList();
-        } else {
-            log.debug("Selecting all trainings for trainer {}", trainerUsername);
-            trainingList = trainingService.selectByTrainerId(trainer.getUserId());
-        }
-        String result=trainerTrainingList(trainingList,trainer);
-        log.info("Successfully retrieved training list for trainer: {}\n", trainerUsername);
+    public String getTrainingList(@NonNull String username, @NonNull LocalDateTime dataFrom, @NonNull LocalDateTime dataTo, boolean isTrainee) {
+        log.info("Fetching training list for {}: {}, from: {}, to: {}", isTrainee ? "trainee" : "trainer", username, dataFrom, dataTo);
+        Object user = isTrainee ?
+                traineeService.selectByUsername(username).orElseThrow(() -> new IllegalArgumentException("Trainee " + username + " not found")) :
+                trainerService.selectByUsername(username).orElseThrow(() -> new IllegalArgumentException("Trainer " + username + "not found"));
+
+        List<Training> trainingList = getTrainings(dataFrom, dataTo, isTrainee, (isTrainee ? ((Trainee) user).getUserId() : ((Trainer) user).getUserId()));
+        String result = formatTrainingList(trainingList, user, isTrainee);
+        log.info("Successfully retrieved training list for {}: {}", isTrainee ? "trainee" : "trainer", username);
         return result;
     }
 
-    private String traineeTrainingList(List<Training> trainings, Trainee trainee) {
-        log.debug("Formatting training list for trainee: {}", trainee.getUsername());
-        StringBuilder stringBuilder = new StringBuilder("Training list of trainee - " + trainee.getFirstName()+" "+trainee.getLastName() +":\n");
+    private List<Training> getTrainings(LocalDateTime dataFrom, LocalDateTime dataTo, boolean isTrainee, long userId) {
+        log.debug("Selecting trainings for {} within the period: {} - {}", isTrainee ? "trainee" : "trainer", dataFrom, dataTo);
+        return isTrainee ? trainingService.selectByTraineeId(userId) : trainingService.selectByTrainerId(userId)
+                .stream()
+                .filter(tr -> (isTrainee ? tr.getTraineeId() == userId : tr.getTrainerId() == userId))
+                .sorted(Comparator.comparing(Training::getTrainingDate))
+                .toList();
+    }
+
+    private String formatTrainingList(List<Training> trainings, Object user, boolean isTrainee) {
+        StringBuilder stringBuilder = new StringBuilder(String.format("Training list of %s - %s %s:\n",
+                isTrainee ? "trainee" : "trainer",
+                isTrainee ? ((Trainee) user).getFirstName() : ((Trainer) user).getFirstName(),
+                isTrainee ? ((Trainee) user).getLastName() : ((Trainer) user).getLastName()));
+
         for (Training training : trainings) {
-            Trainer trainer = trainerService.selectById(training.getTrainerId()).orElse(new Trainer());
-            String duration=String.format("%02d:%02d:%02d", training.getTrainingDuration().toHours(), training.getTrainingDuration().toMinutesPart(), training.getTrainingDuration().toSecondsPart());
-            stringBuilder.append(training.getTrainingName()).append(" - ")
-                    .append("Data and time:").append(training.getTrainingDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
-                    .append(", duration:").append(duration)
-                    .append(", training type:").append(training.getTrainingType())
-                    .append(", trainer's name:").append(trainer.getLastName()).append("\n");
+            String duration = String.format("%02d:%02d:%02d", training.getTrainingDuration().toHours(),
+                    training.getTrainingDuration().toMinutesPart(),
+                    training.getTrainingDuration().toSecondsPart());
+            String userName = isTrainee ? trainerService.selectById(training.getTrainerId()).map(Trainer::getLastName).orElse("Unknown") :
+                    traineeService.selectById(training.getTraineeId()).map(Trainee::getLastName).orElse("Unknown");
+            stringBuilder.append(String.format("%s - Data and time: %s, duration: %s, training type: %s, %s's name: %s%n",
+                    training.getTrainingName(),
+                    training.getTrainingDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                    duration,
+                    training.getTrainingType(),
+                    isTrainee ? "trainer" : "trainee",
+                    userName));
         }
-        log.debug("Finished formatting training list for trainee: {}", trainee.getUsername());
+        log.debug("Finished formatting training list for {}:", isTrainee ? "trainee" : "trainer");
         return stringBuilder.toString();
     }
-    private String trainerTrainingList(List<Training> trainings, Trainer trainer) {
-        log.debug("Formatting training list for trainer: {}", trainer.getUsername());
-        StringBuilder stringBuilder = new StringBuilder("Training list of trainer - " + trainer.getFirstName()+" "+trainer.getLastName() + ":\n");
-        for (Training training : trainings) {
-            Trainee trainee = traineeService.selectById(training.getTraineeId()).orElse(new Trainee());
-            String duration=String.format("%02d:%02d:%02d", training.getTrainingDuration().toHours(), training.getTrainingDuration().toMinutesPart(), training.getTrainingDuration().toSecondsPart());
-            stringBuilder.append(training.getTrainingName()).append(" - ")
-                    .append("Data and time:").append(training.getTrainingDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
-                    .append(", duration:").append(duration)
-                    .append(", training type:").append(training.getTrainingType())
-                    .append(", trainee's name:").append(trainee.getLastName()).append("\n");
-        }
-        log.debug("Finished formatting training list for trainer: {}", trainer.getUsername());
-        return stringBuilder.toString();
-    }
+
 }
