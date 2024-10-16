@@ -58,12 +58,11 @@ public class TrainingServiceTests {
         assertNotNull(training1);
         assertEquals(training2, trainingMap.get(training2.getTrainingId()));
 
-        assertThrows(IllegalArgumentException.class, () -> trainingService.create(0, 1L, trainingName, TrainingType.STRETCHING, data, duration));
-        assertThrows(IllegalArgumentException.class, () -> trainingService.create(1L, 0, trainingName, TrainingType.STRETCHING, data, duration));
+
         assertThrows(IllegalArgumentException.class, () -> trainingService.create(1L, 1L, "  ", TrainingType.STRETCHING, data, duration));
-        assertThrows(IllegalArgumentException.class, () -> trainingService.create(1L, 1L, trainingName, null, data, duration));
-        assertThrows(IllegalArgumentException.class, () -> trainingService.create(1L, 1L, trainingName, TrainingType.STRETCHING, null, duration));
-        assertThrows(IllegalArgumentException.class, () -> trainingService.create(1L, 1L, trainingName, TrainingType.STRETCHING, data, null));
+        assertThrows(NullPointerException.class, () -> trainingService.create(1L, 1L, trainingName, null, data, duration));
+        assertThrows(NullPointerException.class, () -> trainingService.create(1L, 1L, trainingName, TrainingType.STRETCHING, null, duration));
+        assertThrows(NullPointerException.class, () -> trainingService.create(1L, 1L, trainingName, TrainingType.STRETCHING, data, null));
 
         verify(dao, times(2)).save(any(Training.class), anyLong());
     }

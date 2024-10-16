@@ -64,8 +64,8 @@ public class TraineeServiceTests {
         assertEquals("John.Doe2", traineeMap.get(thirdTrainee.getUserId()).getUsername());
         assertEquals(LocalDate.of(2000, 1, 1), traineeMap.get(thirdTrainee.getUserId()).getDateOfBirth());
 
-        assertThrows(IllegalArgumentException.class,()->traineeService.create(null,"Von","Chicago",null));
-        assertThrows(IllegalArgumentException.class,()->traineeService.create("Vince",null,"Chicago",null));
+        assertThrows(NullPointerException.class,()->traineeService.create(null,"Von","Chicago",null));
+        assertThrows(NullPointerException.class,()->traineeService.create("Vince",null,"Chicago",null));
 
         verify(dao, times(3)).save(any(Trainee.class), anyLong());
     }

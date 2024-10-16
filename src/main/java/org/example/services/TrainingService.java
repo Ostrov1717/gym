@@ -1,5 +1,6 @@
 package org.example.services;
 
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dao.GenericDAO;
 import org.example.model.Training;
@@ -28,42 +29,15 @@ public class TrainingService {
         log.info("next Training Id is {}\n", nextId);
     }
 
-    public Training create(long traineeId, long trainerId, String trainingName, TrainingType type, LocalDateTime trainingDate, Duration duration) {
+    public Training create(long traineeId, long trainerId, @NonNull String trainingName, @NonNull TrainingType type, @NonNull LocalDateTime trainingDate, @NonNull Duration duration) {
         log.info("Creation of new training: traineeId={}, trainerId={}, name={}, type={}, date={}, duration={}",
                 traineeId, trainerId, trainingName, type, trainingDate, duration);
-        if (traineeId == 0) {
-            log.error("Error: traineeId cannot be equal to 0");
-            throw new IllegalArgumentException("Trainee Id cannot be equal to 0");
-        }
-        if (trainerId == 0) {
-            log.error("Error: trainerId cannot be equal to 0");
-            throw new IllegalArgumentException("Trainer Id cannot be equal to 0");
-        }
-        if (trainingName == null || trainingName.isBlank()) {
-            log.error("Error: trainingName cannot be null/blank");
+        if (trainingName.isBlank()) {
+            log.error("Error: trainingName cannot beblank");
             throw new IllegalArgumentException("Training name cannot be null/blank");
         }
-        if (type == null) {
-            log.error("Error: training type cannot be null");
-            throw new IllegalArgumentException("Training type cannot be null");
-        }
-        if (trainingDate == null) {
-            log.error("Error: training date cannot be null");
-            throw new IllegalArgumentException("Training date cannot be null");
-        }
-        if (duration == null) {
-            log.error("Error: training duration cannot be null");
-            throw new IllegalArgumentException("Training duration cannot be null.");
-        }
-        Training training = new Training();
         long id = nextId++;
-        training.setTrainingId(id);
-        training.setTraineeId(traineeId);
-        training.setTrainerId(trainerId);
-        training.setTrainingName(trainingName);
-        training.setTrainingType(type);
-        training.setTrainingDate(trainingDate);
-        training.setTrainingDuration(duration);
+        Training training = new Training(id, traineeId, trainerId, trainingName, type, trainingDate, duration);
         log.info("Training has been created: id={}, name={}", id, trainingName);
         return dao.save(training, id);
     }

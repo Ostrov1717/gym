@@ -1,147 +1,146 @@
-2024-10-16 13:50:37 DEBUG o.s.c.a.AnnotationConfigApplicationContext - Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@5891e32e
-2024-10-16 13:50:37 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor'
-2024-10-16 13:50:37 DEBUG o.s.c.a.ClassPathBeanDefinitionScanner - Identified candidate component class: file [E:\EPAM Laba\Spring Core\gym\target\classes\org\example\dao\InMemoryStorage.class]
-2024-10-16 13:50:37 DEBUG o.s.c.a.ClassPathBeanDefinitionScanner - Identified candidate component class: file [E:\EPAM Laba\Spring Core\gym\target\classes\org\example\services\Facade.class]
-2024-10-16 13:50:37 DEBUG o.s.c.a.ClassPathBeanDefinitionScanner - Identified candidate component class: file [E:\EPAM Laba\Spring Core\gym\target\classes\org\example\services\TraineeService.class]
-2024-10-16 13:50:37 DEBUG o.s.c.a.ClassPathBeanDefinitionScanner - Identified candidate component class: file [E:\EPAM Laba\Spring Core\gym\target\classes\org\example\services\TrainerService.class]
-2024-10-16 13:50:37 DEBUG o.s.c.a.ClassPathBeanDefinitionScanner - Identified candidate component class: file [E:\EPAM Laba\Spring Core\gym\target\classes\org\example\services\TrainingService.class]
-2024-10-16 13:50:37 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.springframework.context.event.internalEventListenerProcessor'
-2024-10-16 13:50:37 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.springframework.context.event.internalEventListenerFactory'
-2024-10-16 13:50:37 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor'
-2024-10-16 13:50:37 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.springframework.context.annotation.internalCommonAnnotationProcessor'
-2024-10-16 13:50:37 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'projectConfig'
-2024-10-16 13:50:37 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'inMemoryStorage'
-2024-10-16 13:50:37 DEBUG o.s.c.e.PropertySourcesPropertyResolver - Found key 'storage.files' in PropertySource 'class path resource [application.properties]' with value of type String
-2024-10-16 13:50:37 INFO  org.example.dao.InMemoryStorage - Initializing storage from file: src/main/resources/trainees.json
-2024-10-16 13:50:37 INFO  org.example.dao.InMemoryStorage - Storage class org.example.model.Trainee successfully initialized from file: src/main/resources/trainees.json
+2024-10-16 15:36:41 DEBUG o.s.c.a.AnnotationConfigApplicationContext - Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@5891e32e
+2024-10-16 15:36:41 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor'
+2024-10-16 15:36:41 DEBUG o.s.c.a.ClassPathBeanDefinitionScanner - Identified candidate component class: file [E:\EPAM Laba\Spring Core\gym\target\classes\org\example\dao\InMemoryStorage.class]
+2024-10-16 15:36:41 DEBUG o.s.c.a.ClassPathBeanDefinitionScanner - Identified candidate component class: file [E:\EPAM Laba\Spring Core\gym\target\classes\org\example\services\Facade.class]
+2024-10-16 15:36:41 DEBUG o.s.c.a.ClassPathBeanDefinitionScanner - Identified candidate component class: file [E:\EPAM Laba\Spring Core\gym\target\classes\org\example\services\TraineeService.class]
+2024-10-16 15:36:41 DEBUG o.s.c.a.ClassPathBeanDefinitionScanner - Identified candidate component class: file [E:\EPAM Laba\Spring Core\gym\target\classes\org\example\services\TrainerService.class]
+2024-10-16 15:36:41 DEBUG o.s.c.a.ClassPathBeanDefinitionScanner - Identified candidate component class: file [E:\EPAM Laba\Spring Core\gym\target\classes\org\example\services\TrainingService.class]
+2024-10-16 15:36:42 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.springframework.context.event.internalEventListenerProcessor'
+2024-10-16 15:36:42 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.springframework.context.event.internalEventListenerFactory'
+2024-10-16 15:36:42 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor'
+2024-10-16 15:36:42 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'org.springframework.context.annotation.internalCommonAnnotationProcessor'
+2024-10-16 15:36:42 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'projectConfig'
+2024-10-16 15:36:42 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'inMemoryStorage'
+2024-10-16 15:36:42 DEBUG o.s.c.e.PropertySourcesPropertyResolver - Found key 'storage.files' in PropertySource 'class path resource [application.properties]' with value of type String
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Initializing storage from file: trainees.json
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Storage class org.example.model.Trainee successfully initialized from file: trainees.json
 
-2024-10-16 13:50:37 INFO  org.example.dao.InMemoryStorage - Initializing storage from file: src/main/resources/trainers.json
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Storage class org.example.model.Trainer successfully initialized from file: src/main/resources/trainers.json
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Initializing storage from file: trainers.json
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Storage class org.example.model.Trainer successfully initialized from file: trainers.json
 
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Initializing storage from file: src/main/resources/trainings.json
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Storage class org.example.model.Training successfully initialized from file: src/main/resources/trainings.json
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Initializing storage from file: trainings.json
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Storage class org.example.model.Training successfully initialized from file: trainings.json
 
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Saving entity of type Trainee with Id: 1
-2024-10-16 13:50:38 DEBUG org.example.dao.InMemoryStorage - Saved entity: Trainee{userId=1, firstName='Olga', lastName='Kurilenko', username='Olga.Kurilenko', password='LQMKLCAuMB', isActive=true, address='California', dateOfBirth=1989-10-05}
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Saving entity of type Trainee with Id: 2
-2024-10-16 13:50:38 DEBUG org.example.dao.InMemoryStorage - Saved entity: Trainee{userId=2, firstName='Kim', lastName='Johnson', username='Kim.Johnson', password='pNlNsVXVHB', isActive=true, address='Chicago', dateOfBirth=1986-12-30}
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Saving entity of type Trainee with Id: 3
-2024-10-16 13:50:38 DEBUG org.example.dao.InMemoryStorage - Saved entity: Trainee{userId=3, firstName='Tomas', lastName='Kuk', username='tomas.kuk', password='EHLrKwgqWk', isActive=true, address='Sweden Oslo', dateOfBirth=1972-02-01}
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Saving entity of type Trainee with Id: 4
-2024-10-16 13:50:38 DEBUG org.example.dao.InMemoryStorage - Saved entity: Trainee{userId=4, firstName='George', lastName='TheThird', username='George.TheThird', password='ZceqVAJXBK', isActive=true, address='UK', dateOfBirth=1962-05-05}
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Saving entity of type Trainer with Id: 1
-2024-10-16 13:50:38 DEBUG org.example.dao.InMemoryStorage - Saved entity: Trainer{userID=1, firstName='Tim', lastName='Wallace', username='Tim.Wallace', password='VVHpWyNVCk', isActive=true, specialization=YOGA}
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Saving entity of type Trainer with Id: 2
-2024-10-16 13:50:38 DEBUG org.example.dao.InMemoryStorage - Saved entity: Trainer{userID=2, firstName='Tom', lastName='Robins', username='Tom.Robins', password='SWKaWbXUNv', isActive=true, specialization=FITNESS}
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Saving entity of type Trainer with Id: 3
-2024-10-16 13:50:38 DEBUG org.example.dao.InMemoryStorage - Saved entity: Trainer{userID=3, firstName='Bob', lastName='Getty', username='Bob.Getty', password='ilxMmJEqlM', isActive=true, specialization=STRETCHING}
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Saving entity of type Trainer with Id: 4
-2024-10-16 13:50:38 DEBUG org.example.dao.InMemoryStorage - Saved entity: Trainer{userID=4, firstName='Mary', lastName='Popins', username='Mary.Popins', password='qZhZuQJhXr', isActive=true, specialization=RESISTANCE}
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Saving entity of type Trainer with Id: 5
-2024-10-16 13:50:38 DEBUG org.example.dao.InMemoryStorage - Saved entity: Trainer{userID=5, firstName='Jack', lastName='Daniels', username='Jack.Daniels', password='PErgBhJZme', isActive=true, specialization=YOGA}
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Saving entity of type Training with Id: 1
-2024-10-16 13:50:38 DEBUG org.example.dao.InMemoryStorage - Saved entity: Training{id=1, traineeId=2, trainerId=3, name='Sunday morning training', type=STRETCHING, date=2022-12-09 18:19:00, duration=01:30:00}
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Saving entity of type Training with Id: 2
-2024-10-16 13:50:38 DEBUG org.example.dao.InMemoryStorage - Saved entity: Training{id=2, traineeId=2, trainerId=4, name='Jogging', type=FITNESS, date=2024-10-07 20:04:00, duration=01:30:00}
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Saving entity of type Training with Id: 3
-2024-10-16 13:50:38 DEBUG org.example.dao.InMemoryStorage - Saved entity: Training{id=3, traineeId=3, trainerId=2, name='Friday evening training', type=ZUMBA, date=2024-10-09 10:15:00, duration=01:30:00}
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Saving entity of type Training with Id: 4
-2024-10-16 13:50:38 DEBUG org.example.dao.InMemoryStorage - Saved entity: Training{id=4, traineeId=3, trainerId=4, name='Outside workout', type=FITNESS, date=2024-10-05 15:00:00, duration=01:30:00}
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Saving entity of type Training with Id: 5
-2024-10-16 13:50:38 DEBUG org.example.dao.InMemoryStorage - Saved entity: Training{id=5, traineeId=3, trainerId=1, name='Yoga class', type=YOGA, date=2024-10-08 09:30:00, duration=01:30:00}
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Saving entity of type Training with Id: 6
-2024-10-16 13:50:38 DEBUG org.example.dao.InMemoryStorage - Saved entity: Training{id=6, traineeId=3, trainerId=3, name='Jogging', type=FITNESS, date=2024-10-05 12:00:00, duration=01:30:00}
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Saving entity of type Training with Id: 7
-2024-10-16 13:50:38 DEBUG org.example.dao.InMemoryStorage - Saved entity: Training{id=7, traineeId=4, trainerId=1, name='Evening fitness', type=FITNESS, date=2024-10-03 10:30:00, duration=01:00:00}
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Saving entity of type Training with Id: 8
-2024-10-16 13:50:38 DEBUG org.example.dao.InMemoryStorage - Saved entity: Training{id=8, traineeId=2, trainerId=1, name='Gym workout', type=RESISTANCE, date=2024-10-07 12:00:00, duration=01:20:00}
-2024-10-16 13:50:38 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'facade'
-2024-10-16 13:50:38 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'traineeService'
-2024-10-16 13:50:38 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'traineeDAO'
-2024-10-16 13:50:38 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Autowiring by type from bean name 'traineeDAO' via factory method to bean named 'inMemoryStorage'
-2024-10-16 13:50:38 INFO  org.example.dao.GenericDAO - GenericDAO<Trainee> bean has been created
-2024-10-16 13:50:38 INFO  org.example.services.TraineeService - Initialization of TraineeService and definition of next Trainee Id
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Getting all entities of type Trainee
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Got 4 entities of type Trainee
-2024-10-16 13:50:38 INFO  org.example.services.TraineeService - next Trainee Id is 5
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Saving entity of type Trainee with Id: 1
+2024-10-16 15:36:42 DEBUG org.example.dao.InMemoryStorage - Saved entity: Trainee{userId=1, firstName='Olga', lastName='Kurilenko', username='Olga.Kurilenko', password='LQMKLCAuMB', isActive=true, address='California', dateOfBirth=1989-10-05}
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Saving entity of type Trainee with Id: 2
+2024-10-16 15:36:42 DEBUG org.example.dao.InMemoryStorage - Saved entity: Trainee{userId=2, firstName='Kim', lastName='Johnson', username='Kim.Johnson', password='pNlNsVXVHB', isActive=true, address='Chicago', dateOfBirth=1986-12-30}
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Saving entity of type Trainee with Id: 3
+2024-10-16 15:36:42 DEBUG org.example.dao.InMemoryStorage - Saved entity: Trainee{userId=3, firstName='Tomas', lastName='Kuk', username='tomas.kuk', password='EHLrKwgqWk', isActive=true, address='Sweden Oslo', dateOfBirth=1972-02-01}
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Saving entity of type Trainee with Id: 4
+2024-10-16 15:36:42 DEBUG org.example.dao.InMemoryStorage - Saved entity: Trainee{userId=4, firstName='George', lastName='TheThird', username='George.TheThird', password='ZceqVAJXBK', isActive=true, address='UK', dateOfBirth=1962-05-05}
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Saving entity of type Trainer with Id: 1
+2024-10-16 15:36:42 DEBUG org.example.dao.InMemoryStorage - Saved entity: Trainer{userID=1, firstName='Tim', lastName='Wallace', username='Tim.Wallace', password='VVHpWyNVCk', isActive=true, specialization=YOGA}
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Saving entity of type Trainer with Id: 2
+2024-10-16 15:36:42 DEBUG org.example.dao.InMemoryStorage - Saved entity: Trainer{userID=2, firstName='Tom', lastName='Robins', username='Tom.Robins', password='SWKaWbXUNv', isActive=true, specialization=FITNESS}
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Saving entity of type Trainer with Id: 3
+2024-10-16 15:36:42 DEBUG org.example.dao.InMemoryStorage - Saved entity: Trainer{userID=3, firstName='Bob', lastName='Getty', username='Bob.Getty', password='ilxMmJEqlM', isActive=true, specialization=STRETCHING}
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Saving entity of type Trainer with Id: 4
+2024-10-16 15:36:42 DEBUG org.example.dao.InMemoryStorage - Saved entity: Trainer{userID=4, firstName='Mary', lastName='Popins', username='Mary.Popins', password='qZhZuQJhXr', isActive=true, specialization=RESISTANCE}
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Saving entity of type Trainer with Id: 5
+2024-10-16 15:36:42 DEBUG org.example.dao.InMemoryStorage - Saved entity: Trainer{userID=5, firstName='Jack', lastName='Daniels', username='Jack.Daniels', password='PErgBhJZme', isActive=true, specialization=YOGA}
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Saving entity of type Training with Id: 1
+2024-10-16 15:36:42 DEBUG org.example.dao.InMemoryStorage - Saved entity: Training{id=1, traineeId=2, trainerId=3, name='Sunday morning training', type=STRETCHING, date=2022-12-09 18:19:00, duration=01:30:00}
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Saving entity of type Training with Id: 2
+2024-10-16 15:36:42 DEBUG org.example.dao.InMemoryStorage - Saved entity: Training{id=2, traineeId=2, trainerId=4, name='Jogging', type=FITNESS, date=2024-10-07 20:04:00, duration=01:30:00}
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Saving entity of type Training with Id: 3
+2024-10-16 15:36:42 DEBUG org.example.dao.InMemoryStorage - Saved entity: Training{id=3, traineeId=3, trainerId=2, name='Friday evening training', type=ZUMBA, date=2024-10-09 10:15:00, duration=01:30:00}
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Saving entity of type Training with Id: 4
+2024-10-16 15:36:42 DEBUG org.example.dao.InMemoryStorage - Saved entity: Training{id=4, traineeId=3, trainerId=4, name='Outside workout', type=FITNESS, date=2024-10-05 15:00:00, duration=01:30:00}
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Saving entity of type Training with Id: 5
+2024-10-16 15:36:42 DEBUG org.example.dao.InMemoryStorage - Saved entity: Training{id=5, traineeId=3, trainerId=1, name='Yoga class', type=YOGA, date=2024-10-08 09:30:00, duration=01:30:00}
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Saving entity of type Training with Id: 6
+2024-10-16 15:36:42 DEBUG org.example.dao.InMemoryStorage - Saved entity: Training{id=6, traineeId=3, trainerId=3, name='Jogging', type=FITNESS, date=2024-10-05 12:00:00, duration=01:30:00}
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Saving entity of type Training with Id: 7
+2024-10-16 15:36:42 DEBUG org.example.dao.InMemoryStorage - Saved entity: Training{id=7, traineeId=4, trainerId=1, name='Evening fitness', type=FITNESS, date=2024-10-03 10:30:00, duration=01:00:00}
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Saving entity of type Training with Id: 8
+2024-10-16 15:36:42 DEBUG org.example.dao.InMemoryStorage - Saved entity: Training{id=8, traineeId=2, trainerId=1, name='Gym workout', type=RESISTANCE, date=2024-10-07 12:00:00, duration=01:20:00}
+2024-10-16 15:36:42 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'facade'
+2024-10-16 15:36:42 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'traineeService'
+2024-10-16 15:36:42 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'traineeDAO'
+2024-10-16 15:36:42 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Autowiring by type from bean name 'traineeDAO' via factory method to bean named 'inMemoryStorage'
+2024-10-16 15:36:42 INFO  org.example.dao.GenericDAO - GenericDAO<Trainee> bean has been created
+2024-10-16 15:36:42 DEBUG org.example.services.TraineeService - Initialization of TraineeService and definition of next Trainee Id
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Getting all entities of type Trainee
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Got 4 entities of type Trainee
+2024-10-16 15:36:42 DEBUG org.example.services.TraineeService - next Trainee Id is 5
 
-2024-10-16 13:50:38 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'trainerService'
-2024-10-16 13:50:38 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'trainerDAO'
-2024-10-16 13:50:38 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Autowiring by type from bean name 'trainerDAO' via factory method to bean named 'inMemoryStorage'
-2024-10-16 13:50:38 INFO  org.example.dao.GenericDAO - GenericDAO<Trainer> bean has been created
-2024-10-16 13:50:38 INFO  org.example.services.TrainerService - Initialization of TrainerService and definition of next Trainer Id
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Getting all entities of type Trainer
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Got 5 entities of type Trainer
-2024-10-16 13:50:38 INFO  org.example.services.TrainerService - next Trainer Id is 6
+2024-10-16 15:36:42 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'trainerService'
+2024-10-16 15:36:42 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'trainerDAO'
+2024-10-16 15:36:42 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Autowiring by type from bean name 'trainerDAO' via factory method to bean named 'inMemoryStorage'
+2024-10-16 15:36:42 INFO  org.example.dao.GenericDAO - GenericDAO<Trainer> bean has been created
+2024-10-16 15:36:42 INFO  org.example.services.TrainerService - Initialization of TrainerService and definition of next Trainer Id
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Getting all entities of type Trainer
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Got 5 entities of type Trainer
+2024-10-16 15:36:42 INFO  org.example.services.TrainerService - next Trainer Id is 6
 
-2024-10-16 13:50:38 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'trainingService'
-2024-10-16 13:50:38 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'trainingDAO'
-2024-10-16 13:50:38 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Autowiring by type from bean name 'trainingDAO' via factory method to bean named 'inMemoryStorage'
-2024-10-16 13:50:38 INFO  org.example.dao.GenericDAO - GenericDAO<Training> bean has been created
-2024-10-16 13:50:38 INFO  org.example.services.TrainingService - Initialization of TrainingService and definition of next Training Id
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Getting all entities of type Training
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Got 8 entities of type Training
-2024-10-16 13:50:38 INFO  org.example.services.TrainingService - next Training Id is 9
+2024-10-16 15:36:42 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'trainingService'
+2024-10-16 15:36:42 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Creating shared instance of singleton bean 'trainingDAO'
+2024-10-16 15:36:42 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Autowiring by type from bean name 'trainingDAO' via factory method to bean named 'inMemoryStorage'
+2024-10-16 15:36:42 INFO  org.example.dao.GenericDAO - GenericDAO<Training> bean has been created
+2024-10-16 15:36:42 INFO  org.example.services.TrainingService - Initialization of TrainingService and definition of next Training Id
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Getting all entities of type Training
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Got 8 entities of type Training
+2024-10-16 15:36:42 INFO  org.example.services.TrainingService - next Training Id is 9
 
-2024-10-16 13:50:38 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Autowiring by type from bean name 'facade' via constructor to bean named 'traineeService'
-2024-10-16 13:50:38 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Autowiring by type from bean name 'facade' via constructor to bean named 'trainerService'
-2024-10-16 13:50:38 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Autowiring by type from bean name 'facade' via constructor to bean named 'trainingService'
-2024-10-16 13:50:38 INFO  org.example.services.Facade - Fetching training list for trainee: tomas.kuk, from: 2024-10-01T01:00, to: 2024-10-10T01:00
-2024-10-16 13:50:38 INFO  org.example.services.TraineeService - Search Trainee by username: tomas.kuk
-2024-10-16 13:50:38 INFO  org.example.services.TraineeService - Getting all Trainees
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Getting all entities of type Trainee
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Got 4 entities of type Trainee
-2024-10-16 13:50:38 DEBUG org.example.services.Facade - Selecting trainings for trainee tomas.kuk within the period: 2024-10-01T01:00 - 2024-10-10T01:00
-2024-10-16 13:50:38 INFO  org.example.services.TrainingService - Selecting trainings by period of time from 2024-10-01T01:00 to 2024-10-10T01:00
-2024-10-16 13:50:38 INFO  org.example.services.TrainingService - Getting all Trainings
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Getting all entities of type Training
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Got 8 entities of type Training
-2024-10-16 13:50:38 DEBUG org.example.services.Facade - Formatting training list for trainee: tomas.kuk
-2024-10-16 13:50:38 INFO  org.example.services.TrainerService - Search Trainer by Id: 3
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Searching entity of type Trainer with Id: 3
-2024-10-16 13:50:38 DEBUG org.example.dao.InMemoryStorage - Found entity: Trainer{userID=3, firstName='Bob', lastName='Getty', username='Bob.Getty', password='ilxMmJEqlM', isActive=true, specialization=STRETCHING}
-2024-10-16 13:50:38 INFO  org.example.services.TrainerService - Search Trainer by Id: 4
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Searching entity of type Trainer with Id: 4
-2024-10-16 13:50:38 DEBUG org.example.dao.InMemoryStorage - Found entity: Trainer{userID=4, firstName='Mary', lastName='Popins', username='Mary.Popins', password='qZhZuQJhXr', isActive=true, specialization=RESISTANCE}
-2024-10-16 13:50:38 INFO  org.example.services.TrainerService - Search Trainer by Id: 1
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Searching entity of type Trainer with Id: 1
-2024-10-16 13:50:38 DEBUG org.example.dao.InMemoryStorage - Found entity: Trainer{userID=1, firstName='Tim', lastName='Wallace', username='Tim.Wallace', password='VVHpWyNVCk', isActive=true, specialization=YOGA}
-2024-10-16 13:50:38 INFO  org.example.services.TrainerService - Search Trainer by Id: 2
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Searching entity of type Trainer with Id: 2
-2024-10-16 13:50:38 DEBUG org.example.dao.InMemoryStorage - Found entity: Trainer{userID=2, firstName='Tom', lastName='Robins', username='Tom.Robins', password='SWKaWbXUNv', isActive=true, specialization=FITNESS}
-2024-10-16 13:50:38 DEBUG org.example.services.Facade - Finished formatting training list for trainee: tomas.kuk
-2024-10-16 13:50:38 INFO  org.example.services.Facade - Successfully retrieved training list for trainee: tomas.kuk
+2024-10-16 15:36:42 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Autowiring by type from bean name 'facade' via constructor to bean named 'traineeService'
+2024-10-16 15:36:42 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Autowiring by type from bean name 'facade' via constructor to bean named 'trainerService'
+2024-10-16 15:36:42 DEBUG o.s.b.f.s.DefaultListableBeanFactory - Autowiring by type from bean name 'facade' via constructor to bean named 'trainingService'
+2024-10-16 15:36:42 INFO  org.example.services.Facade - Fetching training list for trainee: tomas.kuk, from: 2024-10-01T01:00, to: 2024-10-10T01:00
+2024-10-16 15:36:42 INFO  org.example.services.TraineeService - Search Trainee by username: tomas.kuk
+2024-10-16 15:36:42 INFO  org.example.services.TraineeService - Getting all Trainees
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Getting all entities of type Trainee
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Got 4 entities of type Trainee
+2024-10-16 15:36:42 DEBUG org.example.services.Facade - Selecting trainings for trainee tomas.kuk within the period: 2024-10-01T01:00 - 2024-10-10T01:00
+2024-10-16 15:36:42 INFO  org.example.services.TrainingService - Selecting trainings by period of time from 2024-10-01T01:00 to 2024-10-10T01:00
+2024-10-16 15:36:42 INFO  org.example.services.TrainingService - Getting all Trainings
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Getting all entities of type Training
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Got 8 entities of type Training
+2024-10-16 15:36:42 DEBUG org.example.services.Facade - Formatting training list for trainee: tomas.kuk
+2024-10-16 15:36:42 INFO  org.example.services.TrainerService - Search Trainer by Id: 3
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Searching entity of type Trainer with Id: 3
+2024-10-16 15:36:42 DEBUG org.example.dao.InMemoryStorage - Found entity: Trainer{userID=3, firstName='Bob', lastName='Getty', username='Bob.Getty', password='ilxMmJEqlM', isActive=true, specialization=STRETCHING}
+2024-10-16 15:36:42 INFO  org.example.services.TrainerService - Search Trainer by Id: 4
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Searching entity of type Trainer with Id: 4
+2024-10-16 15:36:42 DEBUG org.example.dao.InMemoryStorage - Found entity: Trainer{userID=4, firstName='Mary', lastName='Popins', username='Mary.Popins', password='qZhZuQJhXr', isActive=true, specialization=RESISTANCE}
+2024-10-16 15:36:42 INFO  org.example.services.TrainerService - Search Trainer by Id: 1
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Searching entity of type Trainer with Id: 1
+2024-10-16 15:36:42 DEBUG org.example.dao.InMemoryStorage - Found entity: Trainer{userID=1, firstName='Tim', lastName='Wallace', username='Tim.Wallace', password='VVHpWyNVCk', isActive=true, specialization=YOGA}
+2024-10-16 15:36:42 INFO  org.example.services.TrainerService - Search Trainer by Id: 2
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Searching entity of type Trainer with Id: 2
+2024-10-16 15:36:42 DEBUG org.example.dao.InMemoryStorage - Found entity: Trainer{userID=2, firstName='Tom', lastName='Robins', username='Tom.Robins', password='SWKaWbXUNv', isActive=true, specialization=FITNESS}
+2024-10-16 15:36:42 DEBUG org.example.services.Facade - Finished formatting training list for trainee: tomas.kuk
+2024-10-16 15:36:42 INFO  org.example.services.Facade - Successfully retrieved training list for trainee: tomas.kuk
 
-2024-10-16 13:50:38 INFO  org.example.App - Training list of trainee - Tomas Kuk:
+2024-10-16 15:36:42 INFO  org.example.App - Training list of trainee - Tomas Kuk:
 Jogging - Data and time:2024-10-05 12:00:00, duration:01:30:00, training type:FITNESS, trainer's name:Getty
 Outside workout - Data and time:2024-10-05 15:00:00, duration:01:30:00, training type:FITNESS, trainer's name:Popins
 Yoga class - Data and time:2024-10-08 09:30:00, duration:01:30:00, training type:YOGA, trainer's name:Wallace
 Friday evening training - Data and time:2024-10-09 10:15:00, duration:01:30:00, training type:ZUMBA, trainer's name:Robins
 
-2024-10-16 13:50:38 INFO  org.example.services.Facade - Fetching training list for trainer: Tim.Wallace, from: 2024-10-01T01:00, to: 2024-10-10T01:00
-2024-10-16 13:50:38 INFO  org.example.services.TrainerService - Search Trainer by username: Tim.Wallace
-2024-10-16 13:50:38 INFO  org.example.services.TrainerService - Getting all Trainers
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Getting all entities of type Trainer
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Got 5 entities of type Trainer
-2024-10-16 13:50:38 DEBUG org.example.services.Facade - Selecting trainings for trainer Tim.Wallace within the period: 2024-10-01T01:00 - 2024-10-10T01:00
-2024-10-16 13:50:38 INFO  org.example.services.TrainingService - Selecting trainings by period of time from 2024-10-01T01:00 to 2024-10-10T01:00
-2024-10-16 13:50:38 INFO  org.example.services.TrainingService - Getting all Trainings
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Getting all entities of type Training
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Got 8 entities of type Training
-2024-10-16 13:50:38 DEBUG org.example.services.Facade - Formatting training list for trainer: Tim.Wallace
-2024-10-16 13:50:38 INFO  org.example.services.TraineeService - Search Trainee by Id: 4
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Searching entity of type Trainee with Id: 4
-2024-10-16 13:50:38 DEBUG org.example.dao.InMemoryStorage - Found entity: Trainee{userId=4, firstName='George', lastName='TheThird', username='George.TheThird', password='ZceqVAJXBK', isActive=true, address='UK', dateOfBirth=1962-05-05}
-2024-10-16 13:50:38 INFO  org.example.services.TraineeService - Search Trainee by Id: 2
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Searching entity of type Trainee with Id: 2
-2024-10-16 13:50:38 DEBUG org.example.dao.InMemoryStorage - Found entity: Trainee{userId=2, firstName='Kim', lastName='Johnson', username='Kim.Johnson', password='pNlNsVXVHB', isActive=true, address='Chicago', dateOfBirth=1986-12-30}
-2024-10-16 13:50:38 INFO  org.example.services.TraineeService - Search Trainee by Id: 3
-2024-10-16 13:50:38 INFO  org.example.dao.InMemoryStorage - Searching entity of type Trainee with Id: 3
-2024-10-16 13:50:38 DEBUG org.example.dao.InMemoryStorage - Found entity: Trainee{userId=3, firstName='Tomas', lastName='Kuk', username='tomas.kuk', password='EHLrKwgqWk', isActive=true, address='Sweden Oslo', dateOfBirth=1972-02-01}
-2024-10-16 13:50:38 DEBUG org.example.services.Facade - Finished formatting training list for trainer: Tim.Wallace
-2024-10-16 13:50:38 INFO  org.example.services.Facade - Successfully retrieved training list for trainer: Tim.Wallace
-
-2024-10-16 13:50:38 INFO  org.example.App - Training list of trainer - Tim Wallace:
+2024-10-16 15:36:42 INFO  org.example.services.Facade - Fetching training list for trainer: Tim.Wallace, from: 2024-10-01T01:00, to: 2024-10-10T01:00
+2024-10-16 15:36:42 INFO  org.example.services.TrainerService - Search Trainer by username: Tim.Wallace
+2024-10-16 15:36:42 INFO  org.example.services.TrainerService - Getting all Trainers
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Getting all entities of type Trainer
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Got 5 entities of type Trainer
+2024-10-16 15:36:42 DEBUG org.example.services.Facade - Selecting trainings for trainer Tim.Wallace within the period: 2024-10-01T01:00 - 2024-10-10T01:00
+2024-10-16 15:36:42 INFO  org.example.services.TrainingService - Selecting trainings by period of time from 2024-10-01T01:00 to 2024-10-10T01:00
+2024-10-16 15:36:42 INFO  org.example.services.TrainingService - Getting all Trainings
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Getting all entities of type Training
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Got 8 entities of type Training
+2024-10-16 15:36:42 DEBUG org.example.services.Facade - Formatting training list for trainer: Tim.Wallace
+2024-10-16 15:36:42 INFO  org.example.services.TraineeService - Search Trainee by Id: 4
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Searching entity of type Trainee with Id: 4
+2024-10-16 15:36:42 DEBUG org.example.dao.InMemoryStorage - Found entity: Trainee{userId=4, firstName='George', lastName='TheThird', username='George.TheThird', password='ZceqVAJXBK', isActive=true, address='UK', dateOfBirth=1962-05-05}
+2024-10-16 15:36:42 INFO  org.example.services.TraineeService - Search Trainee by Id: 2
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Searching entity of type Trainee with Id: 2
+2024-10-16 15:36:42 DEBUG org.example.dao.InMemoryStorage - Found entity: Trainee{userId=2, firstName='Kim', lastName='Johnson', username='Kim.Johnson', password='pNlNsVXVHB', isActive=true, address='Chicago', dateOfBirth=1986-12-30}
+2024-10-16 15:36:42 INFO  org.example.services.TraineeService - Search Trainee by Id: 3
+2024-10-16 15:36:42 INFO  org.example.dao.InMemoryStorage - Searching entity of type Trainee with Id: 3
+2024-10-16 15:36:42 DEBUG org.example.dao.InMemoryStorage - Found entity: Trainee{userId=3, firstName='Tomas', lastName='Kuk', username='tomas.kuk', password='EHLrKwgqWk', isActive=true, address='Sweden Oslo', dateOfBirth=1972-02-01}
+2024-10-16 15:36:42 DEBUG org.example.services.Facade - Finished formatting training list for trainer: Tim.Wallace
+2024-10-16 15:36:42 INFO  org.example.services.Facade - Successfully retrieved training list for trainer: Tim.Wallace
+2024-10-16 15:36:42 INFO  org.example.App - Training list of trainer - Tim Wallace:
 Evening fitness - Data and time:2024-10-03 10:30:00, duration:01:00:00, training type:FITNESS, trainee's name:TheThird
 Gym workout - Data and time:2024-10-07 12:00:00, duration:01:20:00, training type:RESISTANCE, trainee's name:Johnson
 Yoga class - Data and time:2024-10-08 09:30:00, duration:01:30:00, training type:YOGA, trainee's name:Kuk

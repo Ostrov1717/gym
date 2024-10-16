@@ -1,5 +1,6 @@
 package org.example.services;
 
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dao.GenericDAO;
 import org.example.model.Trainee;
@@ -10,6 +11,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @Service
@@ -21,35 +25,21 @@ public class TraineeService {
     @Autowired
     public void setDao(GenericDAO<Trainee> dao) {
         this.dao = dao;
-        log.info("Initialization of TraineeService and definition of next Trainee Id");
+        log.debug("Initialization of TraineeService and definition of next Trainee Id");
         this.nextId = dao.getAll().keySet().stream().max(Long::compareTo).orElse(0L) + 1;
-        log.info("next Trainee Id is {}\n", nextId);
+        log.debug("next Trainee Id is {}\n", nextId);
     }
 
-    public Trainee create(String firstName, String lastName, String address, LocalDate dateOfBirth) {
+    public Trainee create(@NonNull String firstName, @NonNull String lastName, String address, LocalDate dateOfBirth) {
         log.info("Creation of new Trainee: {} {}", firstName, lastName);
-        if (firstName == null || firstName.isBlank() || lastName == null || lastName.isBlank()) {
-            log.error("Impossible to create new Trainee: blank/null firstname or lastname");
+        if (firstName.isBlank() || lastName.isBlank()) {
+            log.error("Impossible to create new Trainee: blank firstname or lastname");
             throw new IllegalArgumentException("Trainee without firstname and lastname cannot be created !");
         }
-        Trainee trainee = new Trainee();
         long id = nextId++;
-        trainee.setUserId(id);
-        trainee.setFirstName(firstName);
-        trainee.setLastName(lastName);
-        trainee.setActive(true);
-        String userName = firstName + "." + lastName;
-        long alingments = dao.getAll().values().stream()
-                .filter(un -> un.getFirstName().equals(firstName) && un.getLastName().equals(lastName))
-                .count();
-        if (alingments > 0) {
-            userName += alingments;
-        }
-        trainee.setUsername(userName);
-        String password = trainee.madePassword();
-        trainee.setPassword(password);
-        trainee.setAddress(address);
-        trainee.setDateOfBirth(dateOfBirth);
+        String userName = getUsername(firstName, lastName);
+        String password = madePassword();
+        Trainee trainee = new Trainee(id,firstName,lastName,userName,password,true,address,dateOfBirth);
         log.info("Trainee has been created with Id: {}, username: {}", id, userName);
         return dao.save(trainee, id);
     }
@@ -85,6 +75,26 @@ public class TraineeService {
     public List<Trainee> getAll() {
         log.info("Getting all Trainees");
         return new ArrayList<>(dao.getAll().values());
+    }
+
+    private String getUsername(String firstName, String lastName) {
+        String userName = firstName + "." + lastName;
+        long alingments = dao.getAll().values().stream()
+                .filter(un -> un.getFirstName().equals(firstName) && un.getLastName().equals(lastName))
+                .count();
+        if (alingments > 0) {
+            userName += alingments;
+        }
+        return userName;
+    }
+
+    private String madePassword() {
+        Random random = new Random();
+        return Stream.generate(() -> (char) random.nextInt(33, 122))
+                .filter(Character::isLetter)
+                .limit(10)
+                .map(String::valueOf)
+                .collect(Collectors.joining());
     }
 
 }

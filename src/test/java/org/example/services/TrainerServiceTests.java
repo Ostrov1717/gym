@@ -64,8 +64,8 @@ public class TrainerServiceTests {
         assertNotNull(secondTrainer);
         assertEquals("John.Doe2", trainerMap.get(thirdTrainer.getUserId()).getUsername());
 
-        assertThrows(IllegalArgumentException.class, () -> trainerService.create(null, "Von", TrainingType.YOGA));
-        assertThrows(IllegalArgumentException.class, () -> trainerService.create("Vince", null, TrainingType.RESISTANCE));
+        assertThrows(NullPointerException.class, () -> trainerService.create(null, "Von", TrainingType.YOGA));
+        assertThrows(NullPointerException.class, () -> trainerService.create("Vince", null, TrainingType.RESISTANCE));
 
         verify(dao, times(3)).save(any(Trainer.class), anyLong());
     }
