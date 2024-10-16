@@ -9,7 +9,7 @@
         </filter>
     </appender>
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>E:\EPAM Laba\Spring Core\gym\logs\gym.log</file>
+        <file>logs/gym.log</file>
         <append>false</append>
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
