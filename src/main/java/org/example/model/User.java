@@ -1,16 +1,14 @@
 package org.example.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+
+import java.io.Serializable;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Getter
-@Setter
-@EqualsAndHashCode
-abstract class User {
+@Data
+abstract class User implements Serializable {
     private String firstName;
     private String lastName;
     private String username;
@@ -30,12 +28,11 @@ abstract class User {
 
     public String madePassword() {
         Random random = new Random();
-        String password = Stream.generate(() -> (char) random.nextInt(33, 122))
+        return password = Stream.generate(() -> (char) random.nextInt(33, 122))
                 .filter(Character::isLetter)
                 .limit(10)
                 .map(String::valueOf)
                 .collect(Collectors.joining());
-        return password;
     }
 
     @Override

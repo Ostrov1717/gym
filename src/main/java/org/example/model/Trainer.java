@@ -1,13 +1,13 @@
 package org.example.model;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
+import java.io.Serializable;
+
+@Data
 @EqualsAndHashCode(callSuper = true)
-public class Trainer extends User {
+public class Trainer extends User implements Serializable {
     private long userId;
     private TrainingType specialization;
 

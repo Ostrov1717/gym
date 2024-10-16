@@ -1,15 +1,14 @@
 package org.example.model;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-@Getter
-@Setter
+@Data
 @EqualsAndHashCode(callSuper = true)
-public class Trainee extends User {
+public class Trainee extends User implements Serializable {
     private long userId;
     private String address;
     private LocalDate dateOfBirth;

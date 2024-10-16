@@ -1,20 +1,20 @@
 package org.example.dao;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.example.model.Trainee;
 import org.example.model.Trainer;
 import org.example.model.Training;
-import org.example.model.TrainingType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import java.io.BufferedReader;
+
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -23,14 +23,12 @@ public class InMemoryStorage implements Storage {
 
     private final Map<Class<?>, Map<Long, Object>> storage = new HashMap<>();
 
-    private String initFilePath;
+    private String initFilePaths;
 
-    // Метод для получения карты по типу сущности
     private Map<Long, Object> getNamespace(Class<?> entityClass) {
         return storage.computeIfAbsent(entityClass, k -> new HashMap<>());
     }
 
-    // Сохранение объекта в конкретное пространство имён
     @Override
     public <T> T save(Class<T> entityClass, Long id, T entity) {
         log.info("Saving entity of type {} with Id: {}", entityClass.getSimpleName(), id);
@@ -40,7 +38,6 @@ public class InMemoryStorage implements Storage {
         return entity;
     }
 
-    // Получение объекта по id и типу сущности
     @Override
     public <T> T findById(Class<T> entityClass, Long id) {
         log.info("Searching entity of type {} with Id: {}", entityClass.getSimpleName(), id);
@@ -54,7 +51,6 @@ public class InMemoryStorage implements Storage {
         return entity;
     }
 
-    // Удаление объекта по id и типу сущности
     @Override
     public <T> void delete(Class<T> entityClass, Long id) {
         log.info("Deleting entity of type {} with Id: {}", entityClass.getSimpleName(), id);
@@ -66,7 +62,6 @@ public class InMemoryStorage implements Storage {
         }
     }
 
-    // Получение всех объектов конкретного типа
     @Override
     public <T> Map<Long, T> getAll(Class<T> entityClass) {
         log.info("Getting all entities of type {}", entityClass.getSimpleName());
@@ -79,55 +74,35 @@ public class InMemoryStorage implements Storage {
         return result;
     }
 
-    @Value("${storage.init.file}")
-    public void setInitFilePath(String initFilePath) {
-        this.initFilePath = initFilePath;
+    @Value("${storage.files}")
+    public void setInitFilePaths(String initFilePaths) {
+        this.initFilePaths = initFilePaths;
     }
 
     @PostConstruct
     public void init() {
-        log.info("Initializing storage from file: {}", initFilePath);
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(initFilePath)))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                log.debug("Processing line: {}", line);
-                String[] parts = line.split(",");
-                if (line.startsWith("Trainer")) {
-                    long id = Long.parseLong(parts[1]);
-                    String firstName = parts[2];
-                    String lastName = parts[3];
-                    String username = parts[4];
-                    String password = parts[5];
-                    boolean isActive = Boolean.parseBoolean(parts[6]);
-                    TrainingType specialization = TrainingType.valueOf(parts[7]);
-                    Trainer trainer = new Trainer(id, firstName, lastName, username, password, isActive, specialization);
-                    this.save(Trainer.class, id, trainer);
-                    log.info("Trainer with Id: {} successfully loaded", id);
-                } else if (line.startsWith("Trainee")) {
-                    long id = Long.parseLong(parts[1]);
-                    boolean isActive = Boolean.parseBoolean(parts[6]);
-                    LocalDate dateOfBirth = LocalDate.parse(parts[8]);
-                    Trainee trainee = new Trainee(id, parts[2], parts[3], parts[4], parts[5], isActive, parts[7], dateOfBirth);
-                    this.save(Trainee.class, id, trainee);
-                    log.info("Trainee with Id: {} successfully loaded", id);
-                } else if (line.startsWith("Training")) {
-                    long id = Long.parseLong(parts[1]);
-                    long traineeId = Long.parseLong(parts[2]);
-                    long trainerId = Long.parseLong(parts[3]);
-                    String name = parts[4];
-                    TrainingType type = TrainingType.valueOf(parts[5]);
-                    LocalDateTime date = LocalDateTime.parse(parts[6]);
-                    Duration duration = Duration.parse(parts[7]);
-                    Training training = new Training(id, traineeId, trainerId, name, type, date, duration);
-                    this.save(Training.class, id, training);
-                    log.info("Training with Id: {} successfully loaded", id);
-                } else {
-                    throw new IllegalArgumentException("Unknown type: " + parts[0]);
-                }
-            }
-            log.info("Storage successfully initialized from file: {}\n", initFilePath);
-        } catch (IOException | IllegalArgumentException e) {
-            log.error("Failed to initialize storage from file: {}", initFilePath, e);
-        }
+        String[] paths = initFilePaths.split(",");
+        List<Trainee> traineeList = readJson(Trainee.class, paths[0]);
+        List<Trainer> trainerList = readJson(Trainer.class, paths[1]);
+        List<Training> trainingList = readJson(Training.class, paths[2]);
+        traineeList.forEach(trainee -> save(Trainee.class, trainee.getUserId(), trainee));
+        trainerList.forEach(trainer -> save(Trainer.class, trainer.getUserId(), trainer));
+        trainingList.forEach(training -> save(Training.class, training.getTrainingId(), training));
     }
+
+    private <T> List<T> readJson(Class<T> entityClass, String filePath) {
+        log.info("Initializing storage from file: {}", filePath);
+        File jsonFile = new File(filePath);
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        List<T> entities = new ArrayList<>();
+        try {
+            entities = objectMapper.readValue(jsonFile, objectMapper.getTypeFactory().constructCollectionType(List.class, entityClass));
+        } catch (IOException e) {
+            log.error("Failed to initialize storage from file: {}", filePath, e);
+        }
+        log.info("Storage {} successfully initialized from file: {}\n", entityClass, filePath);
+        return entities;
+    }
+
 }

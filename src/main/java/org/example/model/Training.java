@@ -1,17 +1,14 @@
 package org.example.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-@Getter
-@Setter
-@EqualsAndHashCode
-public class Training {
+@Data
+public class Training implements Serializable {
     private long trainingId;
     private long traineeId;
     private long trainerId;
