@@ -1,15 +1,26 @@
 package org.example.model;
 
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.io.Serializable;
 
 @Data
-abstract class User implements Serializable {
+@Entity
+@Table(name = "\"user\"")
+@Inheritance(strategy = InheritanceType.JOINED)
+public class User implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String firstName;
     private String lastName;
     private String username;
+
     private String password;
+    @Column(name = "isActive", columnDefinition = "BOOLEAN")
     private boolean active;
 
     public User() {

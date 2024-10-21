@@ -1,5 +1,20 @@
 package org.example.model;
 
-public enum TrainingType {
-    FITNESS, YOGA, ZUMBA, STRETCHING, RESISTANCE
+import jakarta.persistence.*;
+
+@Entity
+public class TrainingType {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String trainingType;
+
+    public TrainingType() {
+    }
+
+    public TrainingType(String trainingType) {
+        this.trainingType = trainingType;
+    }
 }
