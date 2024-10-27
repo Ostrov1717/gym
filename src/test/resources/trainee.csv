@@ -1,5 +1,0 @@
-id,firstName,lastName,username,password,active,address,birthDate,expected
-1,Olga,Kurilenko,Olga.Kurilenko,LQMKLCAuMB,true,California,1989-10-05,"Trainee{userId=1, firstName='Olga', lastName='Kurilenko', username='Olga.Kurilenko', password='LQMKLCAuMB', isActive=true, address='California', dateOfBirth=1989-10-05}"
-2,Kim,Johnson,Kim.Johnson,pNlNsVXVHB,true,Chicago,1986-12-30,"Trainee{userId=2, firstName='Kim', lastName='Johnson', username='Kim.Johnson', password='pNlNsVXVHB', isActive=true, address='Chicago', dateOfBirth=1986-12-30}"
-3,Tomas,Kuk,tomas.kuk,EHLrKwgqWk,true,Sweden Oslo,1972-02-01,"Trainee{userId=3, firstName='Tomas', lastName='Kuk', username='tomas.kuk', password='EHLrKwgqWk', isActive=true, address='Sweden Oslo', dateOfBirth=1972-02-01}"
-4,George,TheThird,George.TheThird,ZceqVAJXBK,true,UK,1962-05-05,"Trainee{userId=4, firstName='George', lastName='TheThird', username='George.TheThird', password='ZceqVAJXBK', isActive=true, address='UK', dateOfBirth=1962-05-05}"
