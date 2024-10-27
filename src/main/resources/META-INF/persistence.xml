@@ -1,0 +1,23 @@
+<persistence
+        xmlns="https://jakarta.ee/xml/ns/persistence"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             version="3.0"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
+    <persistence-unit name="default" transaction-type="RESOURCE_LOCAL">
+        <class>org.example.model.User</class>
+        <class>org.example.model.Trainee</class>
+        <class>org.example.model.Trainer</class>
+        <class>org.example.model.Training</class>
+        <class>org.example.model.TrainingType</class>
+        <properties>
+            <property name="hibernate.jdbc.time_zone" value="UTC"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL10Dialect"/>
+            <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/gym"/>
+            <property name="jakarta.persistence.jdbc.user" value="postgres"/>
+            <property name="jakarta.persistence.jdbc.password" value="1"/>
+            <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create"/>
+            <property name="hibernate.hbm2ddl.import_files" value="data.sql" />
+        </properties>
+    </persistence-unit>
+</persistence>
