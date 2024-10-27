@@ -1,5 +1,6 @@
 package org.example.model;
 
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -14,11 +15,13 @@ public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Nonnull
     private String firstName;
+    @Nonnull
     private String lastName;
+    @Nonnull
     private String username;
-
+    @Nonnull
     private String password;
     @Column(name = "isActive", columnDefinition = "BOOLEAN")
     private boolean active;
@@ -32,16 +35,5 @@ public class User implements Serializable {
         this.username = username;
         this.password = password;
         this.active = isActive;
-    }
-
-    @Override
-    public String toString() {
-        final StringBuffer sb = new StringBuffer();
-        sb.append(", firstName='").append(firstName).append('\'');
-        sb.append(", lastName='").append(lastName).append('\'');
-        sb.append(", username='").append(username).append('\'');
-        sb.append(", password='").append(password).append('\'');
-        sb.append(", isActive=").append(active);
-        return sb.toString();
     }
 }

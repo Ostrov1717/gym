@@ -2,12 +2,15 @@ package org.example.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.example.profiles.TrainerMapper;
 
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 @Data
+@EqualsAndHashCode(exclude = {"trainees", "trainings"})
 @Entity
 public class Trainer implements Serializable {
 
@@ -16,19 +19,18 @@ public class Trainer implements Serializable {
     private Long trainerId;
 
     @ManyToOne
-    @JoinColumn(name = "specialization_id", referencedColumnName = "id")
+    @JoinColumn(name = "specialization_id", referencedColumnName = "id", nullable = false)
     private TrainingType specialization;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", unique = true)
     private User user;
 
     @ManyToMany(mappedBy = "trainers", fetch = FetchType.LAZY)
     private Set<Trainee> trainees = new HashSet<>();
 
-    @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "trainer", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Set<Training> trainings = new HashSet<>();
-
 
     public Trainer() {
     }
@@ -38,19 +40,9 @@ public class Trainer implements Serializable {
         this.user = user;
     }
 
-    //    public Trainer(long trainerId, String firstName, String lastName, String username, String password, boolean isActive, TrainingType specialization) {
-//        super(firstName, lastName, username, password, isActive);
-//        this.trainerId = trainerId;
-//        this.specialization = specialization;
-//    }
-
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("Trainer{");
-        sb.append("userID=").append(trainerId);
-        sb.append(super.toString());
-        sb.append(", specialization=").append(specialization);
-        sb.append('}');
+        final StringBuffer sb = new StringBuffer(TrainerMapper.toProfile(this).toString());
         return sb.toString();
     }
 }
