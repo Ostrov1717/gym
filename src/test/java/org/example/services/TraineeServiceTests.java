@@ -1,27 +1,42 @@
 package org.example.services;
 
-import org.example.dao.TraineeRepository;
-import org.example.model.Trainee;
-import org.example.model.User;
-import org.example.profiles.TraineeMapper;
-import org.example.profiles.TraineeProfile;
+import org.example.gym.domain.trainee.dto.TraineeDTO;
+import org.example.gym.domain.trainer.dto.TrainerDTO;
+import org.example.gym.domain.user.dto.UserDTO;
+import org.example.gym.domain.trainee.entity.Trainee;
+import org.example.gym.domain.trainer.entity.Trainer;
+import org.example.gym.domain.training.entity.TrainingType;
+import org.example.gym.domain.user.entity.User;
+import org.example.gym.common.exception.UserNotFoundException;
+import org.example.gym.domain.trainee.repository.TraineeRepository;
+import org.example.gym.domain.trainee.service.TraineeService;
+import org.example.gym.domain.user.service.UserService;
 import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TraineeServiceTests {
-
     @Mock
     private TraineeRepository traineeRepository;
-
+    @Mock
+    private UserService userservice;
+    private String firstName = "John";
+    private String lastName = "Doe";
+    private String username="John.Doe";
+    private String address = "California";
+    private String password="password12";
+    private LocalDate dob = LocalDate.of(1990, 1, 1);
+    private Trainee BEST_TRAINEE = new Trainee(new User(firstName, lastName, username,password, true), address, dob);
     @InjectMocks
     private TraineeService traineeService;
 
@@ -29,150 +44,102 @@ public class TraineeServiceTests {
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
-
     @Test
     @DisplayName("Create Trainee Test")
     @Order(1)
     void createTraineeTest() {
+        when(traineeRepository.save(any(Trainee.class))).thenReturn(BEST_TRAINEE);
+        when(userservice.generatePassword()).thenReturn(password);
+        when(userservice.generateUserName("John","Doe")).thenReturn("John.Doe");
 
-        String firstName = "John";
-        String lastName = "Doe";
-        String address = "California";
-        LocalDate dob = LocalDate.of(1990, 1, 1);
+        UserDTO.Response.Login result = traineeService.create(firstName, lastName, address, dob);
 
-        Trainee trainee = new Trainee(new User(firstName, lastName, "John.Doe", "1234", false), address, dob);
-        when(traineeRepository.save(any(Trainee.class))).thenReturn(trainee);
-
-        Optional<TraineeProfile> result = traineeService.create(firstName, lastName, address, dob);
-
-        assertTrue(result.isPresent());
-        assertEquals("John.Doe", result.get().getUsername());
-        assertEquals("California", result.get().getAddress());
-        assertEquals(dob, result.get().getDateOfBirth());
+        assertNotNull(result);
+        assertEquals(username, result.getUsername());
+        assertEquals(password, result.getPassword());
+        verify(userservice, times(1)).generatePassword();
+        verify(userservice, times(1)).generateUserName(firstName, lastName);
         verify(traineeRepository, times(1)).save(any(Trainee.class));
     }
 
     @Test
-    @DisplayName("Select Trainee Test by Id - success")
-    @Order(2)
-    void selectByIdTest() {
-
-        long id = 1L;
-        Trainee trainee = new Trainee
-                (new User("John", "Doe", "John.Doe", "udfdhjhgfg", true), "California", LocalDate.of(1990, 1, 1));
-
-        when(traineeRepository.findById(id)).thenReturn(Optional.of(trainee));
-
-        Optional<TraineeProfile> result = traineeService.findById(id);
-
-        assertTrue(result.isPresent());
-        assertEquals(TraineeMapper.toProfile(trainee), result.get());
-        verify(traineeRepository, times(1)).findById(id);
-    }
-
-    @Test
     @DisplayName("Select Trainee Test by username - success")
-    @Order(3)
+    @Order(2)
     void findByUsername_success() {
+        when(traineeRepository.findByUserUsername(username)).thenReturn(Optional.of(BEST_TRAINEE));
 
-        String username = "John.Doe";
-        String password = "password123";
-        Trainee trainee = new Trainee(new User("John", "Doe", username, password, true), "123 Street", LocalDate.of(1990, 1, 1));
+        TraineeDTO.Response.TraineeProfile result = traineeService.findByUsername(username, password);
 
-        when(traineeRepository.findByUsernameAndPassword(username, password)).thenReturn(Optional.of(trainee));
-        when(traineeRepository.findByUserUsername(username)).thenReturn(Optional.of(trainee));
-
-        Optional<TraineeProfile> result = traineeService.findByUsername(username, password);
-
-        assertTrue(result.isPresent());
-        assertEquals(username, result.get().getUsername());
-        verify(traineeRepository, times(1)).findByUsernameAndPassword(username, password);
+        assertNotNull(result);
+        assertEquals("John", result.getFirstName());
+        assertEquals("Doe", result.getLastName());
+        assertTrue(result.isActive());
+        assertEquals("California", result.getAddress());
+        assertEquals("1990-01-01", result.getDateOfBirth().toString());
+        verify(userservice, times(1)).authenticate(username,password);
         verify(traineeRepository, times(1)).findByUserUsername(username);
     }
-
-    @Test
-    @DisplayName("Select Trainee Test by username - authentication failed")
-    @Order(4)
-    void findByUsername_authenticationFailed() {
-
-        String username = "John.Doe";
-        String password = "wrongPassword";
-
-        when(traineeRepository.findByUsernameAndPassword(username, password)).thenReturn(Optional.empty());
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () ->
-                traineeService.findByUsername(username, password)
-        );
-        assertEquals("Invalid username or password", exception.getMessage());
-        verify(traineeRepository, times(1)).findByUsernameAndPassword(username, password);
-        verify(traineeRepository, never()).findByUserUsername(anyString());
-    }
-
     @Test
     @DisplayName("Select Trainee Test by username - not found")
-    @Order(5)
+    @Order(3)
     void findByUsername_traineeNotFound() {
-
-        String username = "John.Doe";
-        String password = "password123";
-
-        when(traineeRepository.findByUsernameAndPassword(username, password)).thenReturn(Optional.of(new Trainee()));
         when(traineeRepository.findByUserUsername(username)).thenReturn(Optional.empty());
+        Exception exception = assertThrows(UserNotFoundException.class, () ->
+                traineeService.findByUsername(username, password));
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () ->
-                traineeService.findByUsername(username, password)
-        );
         assertEquals("Trainee with username: " + username + " not found.", exception.getMessage());
-        verify(traineeRepository, times(1)).findByUsernameAndPassword(username, password);
+        verify(userservice, times(1)).authenticate(username, password);
         verify(traineeRepository, times(1)).findByUserUsername(username);
     }
     @Test
     @DisplayName("Update Trainee Test - success")
     @Order(6)
     void updateTrainee_success() {
+        String newFirstName = "New name";
+        String newLastName = "New Surname";
+        String newAddress = "New Address";
+        LocalDate newDateOfBirth = LocalDate.of(1990, 2, 2);
+        boolean newIsActive = true;
+        when(traineeRepository.findByUserUsername(username)).thenReturn(Optional.of(BEST_TRAINEE));
 
-        String firstName = "John";
-        String lastName = "Doe";
-        String username = "john.doe";
-        String password = "password123";
-        String address = "123 New Street";
-        LocalDate dateOfBirth = LocalDate.of(1990, 1, 1);
-        boolean isActive = true;
+        TraineeDTO.Response.TraineeProfileFull result = traineeService.update(newFirstName,newLastName, username, password, newAddress, newDateOfBirth, newIsActive);
 
-        Trainee trainee = new Trainee(new User(firstName, lastName, username, password, false), "Old Address", LocalDate.of(1980, 1, 1));
-
-        when(traineeRepository.findByUsernameAndPassword(username, password)).thenReturn(Optional.of(trainee));
-        when(traineeRepository.findByUserUsername(username)).thenReturn(Optional.of(trainee));
-
-        Optional<TraineeProfile> result = traineeService.update(firstName, lastName, username, password, address, dateOfBirth, isActive);
-
-        assertTrue(result.isPresent());
-        assertEquals(firstName, result.get().getFirstName());
-        assertEquals(lastName, result.get().getLastName());
-        assertEquals(address, trainee.getAddress());
-        assertEquals(dateOfBirth, trainee.getDateOfBirth());
-        assertEquals(isActive, trainee.getUser().isActive());
-        verify(traineeRepository, times(1)).findByUsernameAndPassword(username, password);
+        assertEquals(newFirstName, BEST_TRAINEE.getUser().getFirstName());
+        assertEquals(newLastName, BEST_TRAINEE.getUser().getLastName());
+        assertEquals(newAddress, BEST_TRAINEE.getAddress());
+        assertEquals(newDateOfBirth, BEST_TRAINEE.getDateOfBirth());
+        assertEquals(newIsActive, BEST_TRAINEE.getUser().isActive());
+        verify(userservice, times(1)).authenticate(username, password);
         verify(traineeRepository, times(1)).findByUserUsername(username);
     }
-
     @Test
     @DisplayName("Delete Trainee Test - success")
     @Order(7)
     void deleteTrainee_success() {
-
-        String username = "john.doe";
-        String password = "password123";
-        Trainee trainee = new Trainee(new User("John", "Doe", username, password, true), "123 Street", LocalDate.of(1990, 1, 1));
-
-        when(traineeRepository.findByUsernameAndPassword(username, password)).thenReturn(Optional.of(trainee));
-        when(traineeRepository.findByUserUsername(username)).thenReturn(Optional.of(trainee));
+        when(traineeRepository.findByUserUsername(username)).thenReturn(Optional.of(BEST_TRAINEE));
 
         traineeService.delete(username, password);
 
-        verify(traineeRepository, times(1)).findByUsernameAndPassword(username, password);
+        verify(userservice, times(1)).authenticate(username, password);
         verify(traineeRepository, times(1)).findByUserUsername(username);
-        verify(traineeRepository, times(1)).delete(trainee);
+        verify(traineeRepository, times(1)).delete(BEST_TRAINEE);
     }
+    @Test
+    void updateTraineeTrainers_success() {
+        Trainee trainee = new Trainee(new User("John", "Doe", "John.Doe","password12", true),null,null);
+        Trainer trainer1 = new Trainer(new TrainingType("FITNESS"),new User("John", "Doe", "John.Doe","password12", true));
+        Set<Trainer> assingTrainers= new HashSet<>();
+        trainee.setTrainers(assingTrainers);
+        Trainer trainer2 = new Trainer(new TrainingType("YOGA"),new User("John", "Doe", "John.Doe","password12", true));
+        Set<Trainer> newTrainers = new HashSet<>();
+        newTrainers.add(trainer1);
+        newTrainers.add(trainer2);
+        when(traineeRepository.findByUserUsername(username)).thenReturn(Optional.of(trainee));
 
+        Set<TrainerDTO.Response.TrainerSummury> result = traineeService.updateTraineeTrainers(username, password, newTrainers);
+
+        verify(userservice, times(1)).authenticate(username, password);
+        verify(traineeRepository, times(1)).save(trainee);
+        assertEquals(2, result.size(), "The size of returned trainers should match the new trainers set.");
+    }
 }

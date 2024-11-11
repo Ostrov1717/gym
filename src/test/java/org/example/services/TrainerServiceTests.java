@@ -1,19 +1,23 @@
 package org.example.services;
 
 
-import org.example.dao.TrainerRepository;
-import org.example.dao.TrainingTypeRepository;
-import org.example.model.Trainer;
-import org.example.model.TrainingType;
-import org.example.model.User;
-import org.example.model.enums.TrainingTypeName;
-import org.example.profiles.TrainerProfile;
+import org.example.gym.domain.trainer.dto.TrainerDTO;
+import org.example.gym.domain.trainer.dto.TrainerMapper;
+import org.example.gym.domain.user.dto.UserDTO;
+import org.example.gym.common.exception.UserNotFoundException;
+import org.example.gym.domain.trainer.repository.TrainerRepository;
+import org.example.gym.domain.trainer.service.TrainerService;
+import org.example.gym.domain.training.repository.TrainingTypeRepository;
+import org.example.gym.domain.trainer.entity.Trainer;
+import org.example.gym.domain.training.entity.TrainingType;
+import org.example.gym.domain.user.entity.User;
+import org.example.gym.domain.training.entity.TrainingTypeName;
+import org.example.gym.domain.user.service.UserService;
 import org.junit.jupiter.api.*;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -23,9 +27,22 @@ public class TrainerServiceTests {
 
     @Mock
     private TrainerRepository trainerRepository;
-
+    @Mock
+    private UserService userservice;
     @Mock
     private TrainingTypeRepository trainingTypeRepository;
+
+    @Mock
+    private TrainerMapper trainerMapper;
+    private String firstName = "John";
+    private String lastName = "Doe";
+    private String username = "John.Doe";
+
+    private String password = "password12";
+    TrainingTypeName trainingTypeName = TrainingTypeName.YOGA;
+    private TrainingType specialization = new TrainingType(trainingTypeName.name());
+
+    private Trainer BEST_TRAINER = new Trainer(specialization, new User(firstName, lastName, username, password, false));
 
     @InjectMocks
     private TrainerService trainerService;
@@ -39,18 +56,19 @@ public class TrainerServiceTests {
     @DisplayName("Create Trainer Test")
     @Order(1)
     void createTrainer_success() {
-        String firstName = "John";
-        String lastName = "Doe";
         TrainingTypeName trainingTypeName = TrainingTypeName.YOGA;
-        TrainingType specialization = new TrainingType();
         when(trainingTypeRepository.findByTrainingType("YOGA")).thenReturn(Optional.of(specialization));
         when(trainerRepository.save(any(Trainer.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(userservice.generatePassword()).thenReturn(password);
+        when(userservice.generateUserName("John", "Doe")).thenReturn("John.Doe");
 
-        Optional<TrainerProfile> result = trainerService.create(firstName, lastName, trainingTypeName);
+        UserDTO.Response.Login result = trainerService.create(firstName, lastName, trainingTypeName);
 
-        assertTrue(result.isPresent());
-        assertEquals(firstName, result.get().getFirstName());
-        assertEquals(lastName, result.get().getLastName());
+        assertNotNull(result);
+        assertEquals(username, result.getUsername());
+        assertEquals(password, result.getPassword());
+        verify(userservice, times(1)).generatePassword();
+        verify(userservice, times(1)).generateUserName(firstName, lastName);
         verify(trainingTypeRepository, times(1)).findByTrainingType(trainingTypeName.name());
         verify(trainerRepository, times(1)).save(any(Trainer.class));
     }
@@ -59,14 +77,11 @@ public class TrainerServiceTests {
     @DisplayName("Create Trainer failed - training type not found")
     @Order(2)
     void createTrainer_trainingTypeNotFound() {
-        String firstName = "John";
-        String lastName = "Doe";
-        TrainingTypeName trainingTypeName = TrainingTypeName.RESISTANCE;
         when(trainingTypeRepository.findByTrainingType(String.valueOf(trainingTypeName))).thenReturn(Optional.empty());
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                trainerService.create(firstName, lastName, trainingTypeName)
-        );
+                trainerService.create(firstName, lastName, trainingTypeName));
+
         assertEquals("Specialization not found", exception.getMessage());
         verify(trainingTypeRepository, times(1)).findByTrainingType(trainingTypeName.name());
         verify(trainerRepository, never()).save(any(Trainer.class));
@@ -74,87 +89,91 @@ public class TrainerServiceTests {
 
     @Test
     @DisplayName("Select Trainer Test by username - success")
-    @Order(4)
+    @Order(3)
     void findByUsername_success() {
+        when(trainerRepository.findByUserUsername(username)).thenReturn(Optional.of(BEST_TRAINER));
 
-        String username = "john.doe";
-        String password = "password123";
-        Trainer trainer = new Trainer(null, new User("John", "Doe", username, password, true));
+        TrainerDTO.Response.TrainerProfile result = trainerService.findByUsername(username, password);
 
-        when(trainerRepository.findByUsernameAndPassword(username, password)).thenReturn(Optional.of(trainer));
-        when(trainerRepository.findByUserUsername(username)).thenReturn(Optional.of(trainer));
-
-        Optional<TrainerProfile> result = trainerService.findByUsername(username, password);
-
-        assertTrue(result.isPresent());
-        verify(trainerRepository, times(1)).findByUsernameAndPassword(username, password);
+        assertNotNull(result);
+        assertEquals(firstName, result.getFirstName());
+        assertEquals(lastName, result.getLastName());
+        assertFalse(result.isActive());
+        assertEquals(trainingTypeName, result.getSpecialization());
+        verify(userservice, times(1)).authenticate(username, password);
+        verify(trainerRepository, times(1)).findByUserUsername(username);
     }
 
     @Test
-    @DisplayName("Select Trainer Test by username failed autentification")
-    @Order(5)
-    void findByUsername_invalidCredentials() {
+    @DisplayName("Select Trainer Test by username - not found")
+    @Order(4)
+    void findByUsername_trainerNotFound() {
+        when(trainerRepository.findByUserUsername(username)).thenReturn(Optional.empty());
+        Exception exception = assertThrows(UserNotFoundException.class, () ->
+                trainerService.findByUsername(username, password));
 
-        String username = "john.doe";
-        String password = "wrongpassword";
-
-        when(trainerRepository.findByUsernameAndPassword(username, password)).thenReturn(Optional.empty());
-
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                trainerService.findByUsername(username, password)
-        );
-        assertEquals("Invalid username or password", exception.getMessage());
-        verify(trainerRepository, times(1)).findByUsernameAndPassword(username, password);
+        assertEquals("Trainer with username: " + username + " not found.", exception.getMessage());
+        verify(userservice, times(1)).authenticate(username, password);
+        verify(trainerRepository, times(1)).findByUserUsername(username);
     }
 
     @Test
     @DisplayName("Update Trainer Test - success")
-    @Order(6)
+    @Order(5)
     void updateTrainer_success() {
-
-        String firstName = "Jane";
-        String lastName = "Doe";
-        String username = "jane.doe";
-        String password = "password123";
-        TrainingTypeName trainingTypeName = TrainingTypeName.YOGA;
         boolean isActive = true;
-
-        Trainer trainer = new Trainer();
-        trainer.setUser(new User("Jane", "Doe", username, password, true));
-        TrainingType specialization = new TrainingType();
-
-        when(trainerRepository.findByUsernameAndPassword(username, password)).thenReturn(Optional.of(trainer));
-        when(trainerRepository.findByUserUsername(username)).thenReturn(Optional.of(trainer));
+        String newFirstName = "Jane";
+        String newLastName = "Smith";
+        when(trainerRepository.findByUserUsername(username)).thenReturn(Optional.of(BEST_TRAINER));
         when(trainingTypeRepository.findByTrainingType(trainingTypeName.name())).thenReturn(Optional.of(specialization));
-        when(trainerRepository.save(any(Trainer.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Optional<TrainerProfile> result = trainerService.update(firstName, lastName, username, password, trainingTypeName, isActive);
+        TrainerDTO.Response.TrainerProfile updatedProfile = trainerService.update(newFirstName, newLastName, username, password, trainingTypeName, isActive);
 
-        assertTrue(result.isPresent());
-        assertEquals(firstName, result.get().getFirstName());
-        assertEquals(lastName, result.get().getLastName());
-        assertEquals(isActive, result.get().isActive());
+        assertEquals(newFirstName, BEST_TRAINER.getUser().getFirstName());
+        assertEquals(newLastName, BEST_TRAINER.getUser().getLastName());
+        assertEquals(specialization, BEST_TRAINER.getSpecialization());
+        assertTrue(BEST_TRAINER.getUser().isActive(), "The trainer's active status should be updated.");
+        verify(userservice, times(1)).authenticate(username, password);
         verify(trainerRepository, times(1)).findByUserUsername(username);
         verify(trainingTypeRepository, times(1)).findByTrainingType(trainingTypeName.name());
     }
 
+    //
     @Test
-    @DisplayName("Update Trainer failed - trainer not found")
-    @Order(7)
-    void updateTrainer_trainerNotFound() {
-        String username = "nonexistent";
-        String password = "password123";
+    @DisplayName("Getting not assign trainers - successful")
+    @Order(6)
+    void getAvailableTrainers() {
+        try (MockedStatic<TrainerMapper> mockedMapper = (MockedStatic<TrainerMapper>) Mockito.mockStatic(TrainerMapper.class)) {
+            TrainingType type1 = new TrainingType("YOGA");
+            TrainingType type2 = new TrainingType("FITNESS");
+            Trainer trainer2 = new Trainer(type1, new User("Jane", "Doe", "jane.doe", "password", true));
+            Trainer trainer1 = new Trainer(type2, new User("Alice", "Smith", "alice.smith", "password", true));
+            Set<Trainer> trainers = new HashSet<>(Arrays.asList(trainer1, trainer2));
+            TrainerDTO.Response.TrainerSummury trainerSummury1 = new TrainerDTO.Response.TrainerSummury("Jane", "Doe", "jane.doe", type1);
+            TrainerDTO.Response.TrainerSummury trainerSummury2 = new TrainerDTO.Response.TrainerSummury("Alice", "Smith", "alice.smith", type2);
+            Set<TrainerDTO.Response.TrainerSummury> trainerSummaries = new HashSet<>(Arrays.asList(trainerSummury1, trainerSummury2));
+            when(trainerRepository.findTrainersNotAssignedToTraineeByUsername(username)).thenReturn(trainers);
+            mockedMapper.when(() -> TrainerMapper.toSetTrainerSummury(trainers))
+                    .thenReturn(trainerSummaries);
 
-        when(trainerRepository.findByUsernameAndPassword(username, password)).thenReturn(Optional.empty());
-
-        RuntimeException exception = assertThrows(RuntimeException.class, () ->
-                trainerService.update("Jane", "Doe", username, password, TrainingTypeName.YOGA, true)
-        );
-        assertEquals("Invalid username or password", exception.getMessage());
-        verify(trainerRepository, times(1)).findByUsernameAndPassword(username, password);
-        verify(trainingTypeRepository, never()).findByTrainingType(any());
-        verify(trainerRepository, never()).save(any(Trainer.class));
+            Set<TrainerDTO.Response.TrainerSummury> result = trainerService.getAvailableTrainers(username, password);
+            assertNotNull(result);
+            assertEquals(2, result.size());
+            verify(userservice, times(1)).authenticate(username, password);
+            assertEquals(trainerSummaries, result);
+        }
     }
 
+    @Test
+    void trainingTypes_shouldReturnAllTrainingTypes() {
+        List<TrainingType> expectedTrainingTypes = Arrays.stream(TrainingTypeName.values())
+                .map(t -> new TrainingType(t.name()))
+                .collect(Collectors.toList());
+        when(trainingTypeRepository.findAll()).thenReturn(expectedTrainingTypes);
+
+        List<TrainingType> result = trainerService.trainingTypes();
+        assertEquals(expectedTrainingTypes, result);
+        verify(trainingTypeRepository, times(1)).findAll();
+    }
 }
 

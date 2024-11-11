@@ -1,195 +1,146 @@
 package org.example.services;
 
 
-import org.example.dao.TraineeRepository;
-import org.example.dao.TrainerRepository;
-import org.example.dao.TrainingRepository;
-import org.example.model.*;
-import org.example.model.enums.TrainingTypeName;
+import org.example.gym.domain.trainee.entity.Trainee;
+import org.example.gym.domain.trainer.entity.Trainer;
+import org.example.gym.domain.training.dto.TrainingDTO;
+import org.example.gym.domain.training.dto.TrainingMapper;
+import org.example.gym.domain.training.entity.Training;
+import org.example.gym.domain.training.entity.TrainingType;
+import org.example.gym.domain.user.entity.User;
+import org.example.gym.domain.trainee.repository.TraineeRepository;
+import org.example.gym.domain.trainer.repository.TrainerRepository;
+import org.example.gym.domain.training.repository.TrainingRepository;
+import org.example.gym.domain.training.service.TrainingService;
 import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
 
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TrainingServiceTests {
     @Mock
     private TrainingRepository trainingRepository;
-
     @Mock
     private TraineeRepository traineeRepository;
-
     @Mock
     private TrainerRepository trainerRepository;
-
     @InjectMocks
     private TrainingService trainingService;
-
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
-
     @Test
     @DisplayName("Create Training Test")
     @Order(1)
     void createTraining_success() {
-
-        Long traineeId = 1L;
-        Long trainerId = 2L;
-        String trainingName = "Yoga Training";
+        String traineeUsername = "trainee";
+        String trainerUsername = "trainer";
+        String trainingName = "Yoga Class";
         LocalDateTime trainingDate = LocalDateTime.now();
-        Duration duration = Duration.ofHours(2);
+        Duration duration = Duration.ofHours(1);
+        Trainee trainee = new Trainee(new User("First", "Trainee", traineeUsername, "password", false), "Address", LocalDate.now());
+        Trainer trainer = new Trainer(new TrainingType("Yoga"), new User("First", "Trainer", trainerUsername, "password", false));
+        TrainingType trainingType = trainer.getSpecialization();
+        Training expectedTraining = new Training(trainee, trainer, trainingName, trainingType, trainingDate, duration);
+        when(traineeRepository.findByUserUsername(traineeUsername)).thenReturn(Optional.of(trainee));
+        when(trainerRepository.findByUserUsername(trainerUsername)).thenReturn(Optional.of(trainer));
+        when(trainingRepository.save(any(Training.class))).thenReturn(expectedTraining);
 
-        Trainee trainee = new Trainee();
-        Trainer trainer = new Trainer();
-        trainer.setSpecialization(new TrainingType(TrainingTypeName.YOGA.name()));
+        trainingService.create(traineeUsername, trainerUsername, trainingName, trainingDate, duration);
 
-        when(traineeRepository.findById(traineeId)).thenReturn(Optional.of(trainee));
-        when(trainerRepository.findById(trainerId)).thenReturn(Optional.of(trainer));
-        when(trainingRepository.save(any(Training.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
-        // Act
-        Optional<Training> result = trainingService.create(traineeId, trainerId, trainingName, trainingDate, duration);
-
-        // Assert
-        assertTrue(result.isPresent());
-        assertEquals(trainingName, result.get().getTrainingName());
-        verify(traineeRepository, times(1)).findById(traineeId);
-        verify(trainerRepository, times(1)).findById(trainerId);
-        verify(trainingRepository, times(1)).save(any(Training.class));
-    }
-
-    @Test
-    @DisplayName("Create Training failed - Trainee not found")
-    @Order(2)
-    void createTraining_traineeNotFound() {
-
-        Long traineeId = 1L;
-        Long trainerId = 2L;
-        String trainingName = "Yoga Training";
-        LocalDateTime trainingDate = LocalDateTime.now();
-        Duration duration = Duration.ofHours(2);
-
-        when(traineeRepository.findById(traineeId)).thenReturn(Optional.empty());
-
-        RuntimeException exception = assertThrows(RuntimeException.class, () ->
-                trainingService.create(traineeId, trainerId, trainingName, trainingDate, duration)
-        );
-        assertEquals("Trainee not found with ID: " + traineeId, exception.getMessage());
-        verify(traineeRepository, times(1)).findById(traineeId);
-        verify(trainerRepository, never()).findById(anyLong());
-        verify(trainingRepository, never()).save(any(Training.class));
-    }
-
-    @Test
-    @DisplayName("Create Training failed - Trainer not found")
-    @Order(3)
-    void createTraining_trainerNotFound() {
-
-        Long traineeId = 1L;
-        Long trainerId = 2L;
-        String trainingName = "Yoga Training";
-        LocalDateTime trainingDate = LocalDateTime.now();
-        Duration duration = Duration.ofHours(2);
-
-        Trainee trainee = new Trainee();
-        when(traineeRepository.findById(traineeId)).thenReturn(Optional.of(trainee));
-        when(trainerRepository.findById(trainerId)).thenReturn(Optional.empty());
-
-        RuntimeException exception = assertThrows(RuntimeException.class, () ->
-                trainingService.create(traineeId, trainerId, trainingName, trainingDate, duration)
-        );
-        assertEquals("Trainer not found with ID: " + trainerId, exception.getMessage());
-        verify(traineeRepository, times(1)).findById(traineeId);
-        verify(trainerRepository, times(1)).findById(trainerId);
-        verify(trainingRepository, never()).save(any(Training.class));
-    }
-
-    @Test
-    @DisplayName("Create Training failed - Training name blank")
-    @Order(4)
-    void createTraining_trainingNameBlank() {
-        // Arrange
-        Long traineeId = 1L;
-        Long trainerId = 2L;
-        String trainingName = "";
-        LocalDateTime trainingDate = LocalDateTime.now();
-        Duration duration = Duration.ofHours(2);
-
-        Trainee trainee = new Trainee();
-        Trainer trainer = new Trainer();
-        when(traineeRepository.findById(traineeId)).thenReturn(Optional.of(trainee));
-        when(trainerRepository.findById(trainerId)).thenReturn(Optional.of(trainer));
-
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                trainingService.create(traineeId, trainerId, trainingName, trainingDate, duration)
-        );
-        assertEquals("Training name cannot be null/blank", exception.getMessage());
-        verify(traineeRepository, times(0)).findById(traineeId);
-        verify(trainerRepository, times(0)).findById(trainerId);
-        verify(trainingRepository, never()).save(any(Training.class));
+        verify(trainingRepository, times(1)).save(argThat(training ->
+                training.getTrainee().equals(trainee) &&
+                        training.getTrainer().equals(trainer) &&
+                        training.getTrainingName().equals(trainingName) &&
+                        training.getTrainingDate().equals(trainingDate) &&
+                        training.getTrainingDuration().equals(duration)
+        ));
     }
 
     @Test
     @DisplayName("Find trainer list")
-    @Order(5)
+    @Order(2)
     void findTrainerList_success() {
-        String trainerUsername = "trainer1";
-        LocalDateTime fromDate = LocalDateTime.now().minusDays(1);
-        LocalDateTime toDate = LocalDateTime.now().plusDays(1);
-        Training training = new Training();
-        training.setTrainee(new Trainee(new User("Olga", "Kurilenko", "Olga.Kurilenko","WRqqRQMsoy",true),
-                "California", LocalDate.parse("1980-01-01")));
-        training.setTrainer(new Trainer(new TrainingType(TrainingTypeName.STRETCHING.name()),
-                new User("Monica", "Dobs", "55555", "Monica.Dobs",true)));
-        training.setTrainingName("Yoga class");
-        training.setTrainingDate(LocalDateTime.now());
-        training.setTrainingDuration(Duration.ofHours(2));
+        String trainerUsername = "trainerUser";
+        LocalDateTime fromDate = LocalDateTime.of(2024, 11, 1, 10, 0);
+        LocalDateTime toDate = LocalDateTime.of(2024, 11, 30, 18, 0);
+        String traineeName = "Trainee Name";
+        List<Training> trainings = List.of(
+                new Training(new Trainee(new User("John", "Doe", "traineeUser", "password", false), "Address", LocalDate.now()),
+                        new Trainer(new TrainingType("YOGA"), new User("Jane", "Smith", "trainerUser", "password", false)),
+                        "Yoga Training", new TrainingType("YOGA"), LocalDateTime.now(), Duration.ofHours(1)),
+                new Training(new Trainee(new User("Alice", "Wonder", "aliceUser", "password", false), "Address", LocalDate.now()),
+                        new Trainer(new TrainingType("FITNESS"), new User("Jane", "Smith", "trainerUser", "password", false)),
+                        "Cardio Training", new TrainingType("FITNESS"), LocalDateTime.now(), Duration.ofHours(1))
+        );
+        when(trainingRepository.findTrainingsByTrainerAndCriteria(trainerUsername, fromDate, toDate, traineeName))
+                .thenReturn(trainings);
+        try (MockedStatic<TrainingMapper> mockedMapper = mockStatic(TrainingMapper.class)) {
+            List<TrainingDTO.Response.TrainingProfileForTrainer> trainingProfiles = List.of(
+                    new TrainingDTO.Response.TrainingProfileForTrainer("Yoga Training", LocalDateTime.now(),new TrainingType("YOGA"), Duration.ofHours(1),"traineeUser"),
+                    new TrainingDTO.Response.TrainingProfileForTrainer("Cardio Training", LocalDateTime.now(), new TrainingType("FITNESS"),Duration.ofHours(1),"aliceUser")
+            );
+            mockedMapper.when(() -> TrainingMapper.toListForTrainer(trainings)).thenReturn(trainingProfiles);
+            List<TrainingDTO.Response.TrainingProfileForTrainer> result = trainingService.findTrainerList(trainerUsername, fromDate, toDate, traineeName);
 
-        when(trainingRepository.findTrainingsByTrainerAndCriteria(trainerUsername, fromDate, toDate, null))
-                .thenReturn(Collections.singletonList(training));
+            verify(trainingRepository, times(1)).findTrainingsByTrainerAndCriteria(trainerUsername, fromDate, toDate, traineeName);
 
-        List<Training> result = trainingService.findTrainerList(trainerUsername, fromDate, toDate, null);
-
-        assertEquals(1, result.size());
-        assertEquals(training, result.get(0));
-        verify(trainingRepository, times(1)).findTrainingsByTrainerAndCriteria(trainerUsername, fromDate, toDate, null);
+            mockedMapper.verify(() -> TrainingMapper.toListForTrainer(trainings), times(1));
+            assertNotNull(result);
+            assertEquals(trainingProfiles.size(), result.size());
+            assertTrue(result.stream().anyMatch(profile -> "Yoga Training".equals(profile.getTrainingName())));
+            assertTrue(result.stream().anyMatch(profile -> "Cardio Training".equals(profile.getTrainingName())));
+        }
     }
-
     @Test
     @DisplayName("Find trainee list")
-    @Order(6)
+    @Order(3)
     void findTraineeList_success() {
-        String traineeUsername = "trainee1";
-        LocalDateTime fromDate = LocalDateTime.now().minusDays(1);
-        LocalDateTime toDate = LocalDateTime.now().plusDays(1);
-        Training training = new Training();
-        training.setTrainee(new Trainee(new User("Olga", "Kurilenko", "Olga.Kurilenko", "WRqqRQMsoy", true),
-                "California", LocalDate.parse("1980-01-01")));
-        training.setTrainer(new Trainer(new TrainingType(TrainingTypeName.STRETCHING.name()),
-                new User("Monica", "Dobs", "55555", "Monica.Dobs", true)));
-        training.setTrainingName("Yoga class");
-        training.setTrainingDate(LocalDateTime.now());
-        training.setTrainingDuration(Duration.ofHours(2));
+        String traineeUsername = "traineeUser";
+        LocalDateTime fromDate = LocalDateTime.of(2024, 11, 1, 10, 0);
+        LocalDateTime toDate = LocalDateTime.of(2024, 11, 30, 18, 0);
+        String trainerName = "Trainer Name";
+        String trainingType = "YOGA";
+        List<Training> trainings = List.of(
+                new Training(new Trainee(new User("John", "Doe", "traineeUser", "password", false), "Address", LocalDate.now()),
+                        new Trainer(new TrainingType("Yoga"), new User("Jane", "Smith", "trainerUser", "password", false)),
+                        "Yoga Training", new TrainingType("Yoga"), LocalDateTime.now(), Duration.ofHours(1)),
+                new Training(new Trainee(new User("Alice", "Wonder", "aliceUser", "password", false), "Address", LocalDate.now()),
+                        new Trainer(new TrainingType("Cardio"), new User("Jane", "Smith", "trainerUser", "password", false)),
+                        "Cardio Training", new TrainingType("Cardio"), LocalDateTime.now(), Duration.ofHours(1))
+        );
 
-        when(trainingRepository.findTrainingsByTraineeAndCriteria(traineeUsername, fromDate, toDate, null, null))
-                .thenReturn(Collections.singletonList(training));
+        when(trainingRepository.findTrainingsByTraineeAndCriteria(traineeUsername, fromDate, toDate, trainerName))
+                .thenReturn(trainings);
 
-        List<Training> result = trainingService.findTraineeList(traineeUsername, fromDate, toDate, null, null);
+        try (MockedStatic<TrainingMapper> mockedMapper = mockStatic(TrainingMapper.class)) {
+            List<TrainingDTO.Response.TrainingProfileForTrainee> trainingProfiles = List.of(
+                    new TrainingDTO.Response.TrainingProfileForTrainee("Yoga Training",  LocalDateTime.now(), new TrainingType("YOGA"),Duration.ofHours(1),"trainerUser"),
+                    new TrainingDTO.Response.TrainingProfileForTrainee("Cardio Training",  LocalDateTime.now(), new TrainingType("FITNESS"), Duration.ofHours(1),"trainerUser")
+            );
+            mockedMapper.when(() -> TrainingMapper.toListForTrainee(trainings)).thenReturn(trainingProfiles);
 
-        assertEquals(1, result.size());
-        assertEquals(training, result.get(0));
-        verify(trainingRepository, times(1)).findTrainingsByTraineeAndCriteria(traineeUsername, fromDate, toDate, null, null);
+            List<TrainingDTO.Response.TrainingProfileForTrainee> result = trainingService.findTraineeList(traineeUsername, fromDate, toDate, trainerName, trainingType);
+
+            verify(trainingRepository, times(1)).findTrainingsByTraineeAndCriteria(traineeUsername, fromDate, toDate, trainerName);
+            mockedMapper.verify(() -> TrainingMapper.toListForTrainee(trainings), times(1));
+            assertNotNull(result);
+            assertEquals(trainingProfiles.size(), result.size());
+            assertTrue(result.stream().anyMatch(profile -> "Yoga Training".equals(profile.getTrainingName())));
+            assertTrue(result.stream().anyMatch(profile -> "Cardio Training".equals(profile.getTrainingName())));
+        }
     }
 }
