@@ -18,9 +18,10 @@ public final class ApiUrls {
     public static final String UPDATE_TRAINER = "/update";
     public static final String GET_NOT_ASSIGN_TRAINERS = "/not-assign-trainers";
     public static final String UPDATE_TRAINER_STATUS = "/status";
-    public static final String GET_TRAINEE_TRAININGS = TRAINEE_BASE + "/trainings";
-    public static final String GET_TRAINER_TRAININGS = TRAINER_BASE + "/trainings";
-    public static final String CREATE_TRAINING = V1_BASE+"/trainings/create";
+    public static final String TRAININGS_BASE = V1_BASE+"/trainings";
+    public static final String GET_TRAINEE_TRAININGS = "/trainee";
+    public static final String GET_TRAINER_TRAININGS = "/trainer";
+    public static final String CREATE_TRAINING = "/create";
     public static final String TRAINING_TYPES = "/trainings-type";
 
     private ApiUrls() {

@@ -1,4 +1,4 @@
-package org.example.services;
+package org.example.gym.services;
 
 
 import org.example.gym.domain.trainee.entity.Trainee;

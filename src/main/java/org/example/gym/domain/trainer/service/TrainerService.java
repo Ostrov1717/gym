@@ -3,19 +3,19 @@ package org.example.gym.domain.trainer.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.gym.common.exception.UserNotFoundException;
+import org.example.gym.common.exception.WrongTrainingTypeException;
 import org.example.gym.domain.trainer.dto.TrainerDTO;
 import org.example.gym.domain.trainer.dto.TrainerMapper;
-import org.example.gym.domain.user.dto.UserDTO;
 import org.example.gym.domain.trainer.entity.Trainer;
+import org.example.gym.domain.trainer.repository.TrainerRepository;
 import org.example.gym.domain.training.entity.TrainingType;
 import org.example.gym.domain.training.entity.TrainingTypeName;
-import org.example.gym.domain.user.entity.User;
-import org.example.gym.common.exception.UserNotFoundException;
-import org.example.gym.domain.trainer.repository.TrainerRepository;
 import org.example.gym.domain.training.repository.TrainingTypeRepository;
+import org.example.gym.domain.user.dto.UserDTO;
+import org.example.gym.domain.user.entity.User;
 import org.example.gym.domain.user.service.UserService;
 import org.springframework.stereotype.Service;
-
 
 import java.util.HashSet;
 import java.util.List;
@@ -41,14 +41,12 @@ public class TrainerService {
         return new UserDTO.Response.Login(trainer.getUser().getUsername(), trainer.getUser().getPassword());
     }
 
-    @Transactional
     public TrainerDTO.Response.TrainerProfile findByUsername(String username, String password) {
         userService.authenticate(username, password);
         Trainer trainer = findTrainerByUsername(username);
         return TrainerMapper.toProfile(trainer);
     }
 
-    @Transactional
     public Trainer findTrainerByUsername(String username) {
         log.info("Searching Trainer by username: {}", username);
         return trainerRepository.findByUserUsername(username).orElseThrow(() -> new UserNotFoundException("Trainer with username: " + username + " not found."));
@@ -91,10 +89,9 @@ public class TrainerService {
     private TrainingType findTrainingType(TrainingTypeName trainingTypeName) {
         log.info("Comparing the trainer's specialization with the existing ones");
         return trainingTypeRepository.findByTrainingType(trainingTypeName.name())
-                .orElseThrow(() -> new IllegalArgumentException("Specialization not found"));
+                .orElseThrow(() -> new WrongTrainingTypeException("Such trainer's specialization not exist in gym"));
     }
 
-    @Transactional
     public List<TrainingType> trainingTypes() {
         log.info("Getting available training types");
         return trainingTypeRepository.findAll();

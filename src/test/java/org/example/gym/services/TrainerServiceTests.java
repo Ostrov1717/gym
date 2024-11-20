@@ -1,6 +1,7 @@
-package org.example.services;
+package org.example.gym.services;
 
 
+import org.example.gym.common.exception.WrongTrainingTypeException;
 import org.example.gym.domain.trainer.dto.TrainerDTO;
 import org.example.gym.domain.trainer.dto.TrainerMapper;
 import org.example.gym.domain.user.dto.UserDTO;
@@ -79,10 +80,10 @@ public class TrainerServiceTests {
     void createTrainer_trainingTypeNotFound() {
         when(trainingTypeRepository.findByTrainingType(String.valueOf(trainingTypeName))).thenReturn(Optional.empty());
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+        Exception exception = assertThrows(WrongTrainingTypeException.class, () ->
                 trainerService.create(firstName, lastName, trainingTypeName));
 
-        assertEquals("Specialization not found", exception.getMessage());
+        assertEquals("Such trainer's specialization not exist in gym", exception.getMessage());
         verify(trainingTypeRepository, times(1)).findByTrainingType(trainingTypeName.name());
         verify(trainerRepository, never()).save(any(Trainer.class));
     }
@@ -99,7 +100,7 @@ public class TrainerServiceTests {
         assertEquals(firstName, result.getFirstName());
         assertEquals(lastName, result.getLastName());
         assertFalse(result.isActive());
-        assertEquals(trainingTypeName, result.getSpecialization());
+        assertEquals("YOGA", result.getSpecialization().getTrainingType());
         verify(userservice, times(1)).authenticate(username, password);
         verify(trainerRepository, times(1)).findByUserUsername(username);
     }

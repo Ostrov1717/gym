@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.example.gym.domain.trainer.dto.TrainerDTO;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -50,11 +51,13 @@ public enum TraineeDTO {
     private interface TrainersUsernames {
         Set<TrainerDTO.Response.TrainerUsername> getTrainersUsernames();
     }
+
     @Schema(description = "Enum DTO contains details about Trainee's RequestDTO")
     public enum Request {
         ;
 
         @Data
+        @AllArgsConstructor
         @Schema(description = "Request DTO contains details about the Trainee")
         public static class TraineeRegistration implements FirstName, LastName, DateOfBirth, Address {
             @NotBlank(message = "First name is required")
@@ -63,6 +66,7 @@ public enum TraineeDTO {
             @NotBlank(message = "Last name is required")
             @Schema(description = "Last name of the Trainee", example = "Kurilenko")
             String lastName;
+            @DateTimeFormat(pattern = "yyyy-MM-dd")
             @Schema(description = "Date of birth of the Trainee", example = "1990-01-02")
             LocalDate dateOfBirth;
             @Schema(description = "Address of the Trainee", example = "02055, California, Mulholland Drive")
@@ -70,6 +74,7 @@ public enum TraineeDTO {
         }
 
         @Data
+        @AllArgsConstructor
         @Schema(description = "Request DTO contains details about the Trainee")
         public static class TraineeUpdate implements Username, Password, FirstName, LastName, DateOfBirth, Address, Active {
             @NotBlank(message = "{username.required}")
@@ -94,6 +99,7 @@ public enum TraineeDTO {
         }
 
         @Data
+        @AllArgsConstructor
         @Schema(description = "Request DTO contains details about the Trainee")
         public static class UpdateTrainers implements Username, Password, TrainersUsernames {
             @NotBlank(message = "{username.required}")
@@ -103,10 +109,11 @@ public enum TraineeDTO {
             @Schema(description = "Password of the Trainee", example = "WRqqRQMsoy")
             String password;
             @NotNull(message = "Trainer's set is required")
-            @Schema(description = "List trainers usernames of the Trainee", example = "[Monica.Dobs,Wallace.Tim]")
+            @Schema(description = "List trainers usernames of the Trainee", example = "[\"Monica.Dobs\", \"Wallace.Tim\"]")
             Set<TrainerDTO.Response.TrainerUsername> trainersUsernames;
         }
     }
+
     @Schema(description = "Enum DTO contains details about Trainee's ResponseDTO")
     public enum Response {
         ;
