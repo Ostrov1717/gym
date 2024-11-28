@@ -1,8 +1,9 @@
 package org.example.gym.domain.user.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Value;
@@ -52,31 +53,22 @@ public enum UserDTO {
 
         @Data
         @Schema(description = "Request DTO contains details about the User")
-        public static class ChangeLogin implements Username, Password, NewPassword {
-            @NotBlank(message = "{username.required}")
-            @Schema(description = "Username of the User", example = "Olga.Kurilenko")
-            String username;
-            @NotBlank(message = "{password.required}")
-            @Schema(description = "Old password of the User", example = "WRqqRQMsoy")
-            String password;
+        public static class ChangeLogin implements NewPassword {
             @NotBlank(message = "New password is required")
             @Schema(description = "New password of the User", example = "12345")
             String newPassword;
         }
 
         @Data
-        @AllArgsConstructor
         @Schema(description = "Request DTO contains details about the User")
-        public static class ActivateOrDeactivate implements Username, Active {
-            @NotBlank(message = "{username.required}")
-            @Schema(description = "Username of the User", example = "Olga.Kurilenko")
-            String username;
-            @NotBlank(message = "{password.required}")
-            @Schema(description = "Password of the User", example = "WRqqRQMsoy")
-            String password;
-            @NotNull(message = "Active status is required")
+        public static class ActivateOrDeactivate implements Active {
             @Schema(description = "Activity status of the User", example = "true")
             boolean active;
+
+            @JsonCreator
+            public ActivateOrDeactivate(@JsonProperty("active") boolean active) {
+                this.active = active;
+            }
         }
     }
 

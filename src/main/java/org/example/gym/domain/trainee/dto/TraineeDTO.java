@@ -1,6 +1,8 @@
 package org.example.gym.domain.trainee.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -18,10 +20,6 @@ public enum TraineeDTO {
 
     private interface Username {
         String getUsername();
-    }
-
-    private interface Password {
-        String getPassword();
     }
 
     private interface FirstName {
@@ -76,13 +74,7 @@ public enum TraineeDTO {
         @Data
         @AllArgsConstructor
         @Schema(description = "Request DTO contains details about the Trainee")
-        public static class TraineeUpdate implements Username, Password, FirstName, LastName, DateOfBirth, Address, Active {
-            @NotBlank(message = "{username.required}")
-            @Schema(description = "Username of the Trainee", example = "Olga.Kurilenko")
-            String username;
-            @NotBlank(message = "{password.required}")
-            @Schema(description = "Password of the Trainee", example = "WRqqRQMsoy")
-            String password;
+        public static class TraineeUpdate implements FirstName, LastName, DateOfBirth, Address, Active {
             @NotBlank(message = "{first.name.required}")
             @Schema(description = "First name of the Trainee", example = "Olga")
             String firstName;
@@ -99,18 +91,16 @@ public enum TraineeDTO {
         }
 
         @Data
-        @AllArgsConstructor
         @Schema(description = "Request DTO contains details about the Trainee")
-        public static class UpdateTrainers implements Username, Password, TrainersUsernames {
-            @NotBlank(message = "{username.required}")
-            @Schema(description = "Username of the Trainee", example = "Olga.Kurilenko")
-            String username;
-            @NotBlank(message = "{password.required}")
-            @Schema(description = "Password of the Trainee", example = "WRqqRQMsoy")
-            String password;
+        public static class UpdateTrainers implements TrainersUsernames {
             @NotNull(message = "Trainer's set is required")
             @Schema(description = "List trainers usernames of the Trainee", example = "[\"Monica.Dobs\", \"Wallace.Tim\"]")
             Set<TrainerDTO.Response.TrainerUsername> trainersUsernames;
+
+            @JsonCreator
+            public UpdateTrainers(@JsonProperty("trainersUsernames") Set<TrainerDTO.Response.TrainerUsername> trainersUsernames) {
+                this.trainersUsernames = trainersUsernames;
+            }
         }
     }
 

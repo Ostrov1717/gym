@@ -15,6 +15,7 @@ import org.example.gym.domain.training.repository.TrainingTypeRepository;
 import org.example.gym.domain.user.dto.UserDTO;
 import org.example.gym.domain.user.entity.User;
 import org.example.gym.domain.user.service.UserService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -29,20 +30,22 @@ public class TrainerService {
     private final TrainingTypeRepository trainingTypeRepository;
     private final UserService userService;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Transactional
     public UserDTO.Response.Login create(String firstName, String lastName, TrainingTypeName trainingTypeName) {
         log.info("Creating a new Trainer: {} {}", firstName, lastName);
         TrainingType specialization = findTrainingType(trainingTypeName);
         String password = userService.generatePassword();
         String username = userService.generateUserName(firstName, lastName);
-        Trainer trainer = new Trainer(specialization, new User(firstName, lastName, username, password, false));
+        String hashedPassword = passwordEncoder.encode(password);
+        Trainer trainer = new Trainer(specialization, new User(firstName, lastName, username, hashedPassword, false));
         trainerRepository.save(trainer);
         log.info("Trainer created with username: {}", trainer.getUser().getUsername());
-        return new UserDTO.Response.Login(trainer.getUser().getUsername(), trainer.getUser().getPassword());
+        return new UserDTO.Response.Login(trainer.getUser().getUsername(), password);
     }
 
-    public TrainerDTO.Response.TrainerProfile findByUsername(String username, String password) {
-        userService.authenticate(username, password);
+    public TrainerDTO.Response.TrainerProfile findByUsername(String username) {
         Trainer trainer = findTrainerByUsername(username);
         return TrainerMapper.toProfile(trainer);
     }
@@ -53,8 +56,7 @@ public class TrainerService {
     }
 
     @Transactional
-    public TrainerDTO.Response.TrainerProfile update(String firstName, String lastName, String username, String password, TrainingTypeName trainingTypeName, boolean isActive) {
-        userService.authenticate(username, password);
+    public TrainerDTO.Response.TrainerProfile update(String firstName, String lastName, String username, TrainingTypeName trainingTypeName, boolean isActive) {
         log.info("Updating Trainer's data with username: {}", username);
         Trainer trainer = findTrainerByUsername(username);
         TrainingType specialization = findTrainingType(trainingTypeName);
@@ -67,8 +69,7 @@ public class TrainerService {
     }
 
     @Transactional
-    public Set<TrainerDTO.Response.TrainerSummury> getAvailableTrainers(String traineeUsername, String password) {
-        userService.authenticate(traineeUsername, password);
+    public Set<TrainerDTO.Response.TrainerSummury> getAvailableTrainers(String traineeUsername) {
         log.info("Search trainers  that not assigned on trainee: {}", traineeUsername);
         Set<Trainer> trainers = trainerRepository.findTrainersNotAssignedToTraineeByUsername(traineeUsername);
         log.info("Found {} active trainers for trainee: {}", trainers.size(), traineeUsername);
