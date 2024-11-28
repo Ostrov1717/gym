@@ -23,7 +23,6 @@ public class User implements Serializable {
     private String username;
     @Nonnull
     private String password;
-    @Column(name = "isActive", columnDefinition = "BOOLEAN")
     private boolean active;
 
     public User() {

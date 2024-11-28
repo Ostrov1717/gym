@@ -1,19 +1,21 @@
-package org.example.services;
+package org.example.gym.services;
 
-import org.example.gym.domain.trainee.dto.TraineeDTO;
-import org.example.gym.domain.trainer.dto.TrainerDTO;
-import org.example.gym.domain.user.dto.UserDTO;
-import org.example.gym.domain.trainee.entity.Trainee;
-import org.example.gym.domain.trainer.entity.Trainer;
-import org.example.gym.domain.training.entity.TrainingType;
-import org.example.gym.domain.user.entity.User;
 import org.example.gym.common.exception.UserNotFoundException;
+import org.example.gym.domain.trainee.dto.TraineeDTO;
+import org.example.gym.domain.trainee.entity.Trainee;
+import org.example.gym.domain.trainee.metrics.TraineeMetrics;
 import org.example.gym.domain.trainee.repository.TraineeRepository;
 import org.example.gym.domain.trainee.service.TraineeService;
+import org.example.gym.domain.trainer.dto.TrainerDTO;
+import org.example.gym.domain.trainer.entity.Trainer;
+import org.example.gym.domain.training.entity.TrainingType;
+import org.example.gym.domain.user.dto.UserDTO;
+import org.example.gym.domain.user.entity.User;
 import org.example.gym.domain.user.service.UserService;
 import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDate;
@@ -30,6 +32,8 @@ public class TraineeServiceTests {
     private TraineeRepository traineeRepository;
     @Mock
     private UserService userservice;
+    @Mock
+    private TraineeMetrics traineeMetrics;
     private String firstName = "John";
     private String lastName = "Doe";
     private String username="John.Doe";
@@ -51,6 +55,7 @@ public class TraineeServiceTests {
         when(traineeRepository.save(any(Trainee.class))).thenReturn(BEST_TRAINEE);
         when(userservice.generatePassword()).thenReturn(password);
         when(userservice.generateUserName("John","Doe")).thenReturn("John.Doe");
+        Mockito.doNothing().when(traineeMetrics).incrementNewTrainee();
 
         UserDTO.Response.Login result = traineeService.create(firstName, lastName, address, dob);
 

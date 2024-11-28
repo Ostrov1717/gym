@@ -1,37 +1,37 @@
 package org.example.gym.domain.user.service;
 
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.gym.domain.user.entity.User;
 import org.example.gym.common.exception.AuthenticationException;
 import org.example.gym.common.exception.UserNotFoundException;
+import org.example.gym.domain.user.entity.User;
+import org.example.gym.domain.user.metrics.UserMetrics;
 import org.example.gym.domain.user.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import jakarta.transaction.Transactional;
-
 
 import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 @Slf4j
 public class UserService {
     private final UserRepository userRepository;
 
-    @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final UserMetrics userMetrics;
 
-    @Transactional
-    public void authenticate(String username, String password) {
+    public boolean authenticate(String username, String password) {
         log.info("Attempting to authenticate Trainee with username: {}", username);
         boolean authenticated = userRepository.findByUsernameAndPassword(username, password).isPresent();
         if (!authenticated) {
             log.warn("Authentication failed for username: {}", username);
+            userMetrics.incrementAuthenticationFailed(username);
             throw new AuthenticationException("Invalid username or password");
         }
         log.info("Authentication successful for username: {}", username);
+        userMetrics.incrementAuthenticationSuccess(username);
+        return true;
     }
 
     @Transactional
@@ -43,7 +43,6 @@ public class UserService {
         log.info("Password successfully changed");
     }
 
-    @Transactional
     private User findUserByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User with username: " + username + " not found."));
     }
@@ -71,6 +70,11 @@ public class UserService {
         boolean activated = updateActiveStatus(username, true);
         log.info("User with username: {} activated", username);
         return activated;
+    }
+
+    public long getActiveUserCount() {
+        log.info("Counting active users");
+        return userRepository.countByActive(true);
     }
 
     public String generatePassword() {

@@ -6,8 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.example.gym.domain.training.entity.TrainingType;
-import org.example.gym.domain.training.entity.TrainingTypeName;
-import org.example.gym.common.utils.EnumConstraint;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.Duration;
@@ -58,6 +56,7 @@ public enum TrainingDTO {
         ;
 
         @Data
+        @AllArgsConstructor
         @Schema(description = "Request DTO contains details for creation trainings")
         public static class NewTraining implements TraineeName, TrainerName, TrainingName, TrainingDate, TrainingDuration {
             @NotBlank(message = "Trainee username is required")
@@ -73,13 +72,13 @@ public enum TrainingDTO {
             @Schema(description = "Date and time of training", example = "1990-01-02T19:00")
             LocalDateTime trainingDate;
             @NotNull(message = "Training duration is required")
-            @Schema(description = "Duration of training", example = "1000")
+            @Schema(description = "Duration of training", example = "PT1H")
             Duration trainingDuration;
         }
 
         @Data
         @Schema(description = "Request DTO contains details about trainings for trainee")
-        public static class TraineeTrains implements TraineeName, PeriodFrom, PeriodTo, TrainerName{
+        public static class TraineeTrains implements TraineeName, PeriodFrom, PeriodTo, TrainerName, TrainingSpecial {
             @NotBlank(message = "Trainee username is required")
             @Schema(description = "Username of the Trainee", example = "Olga.Kurilenko")
             String traineeUsername;
@@ -91,8 +90,7 @@ public enum TrainingDTO {
             LocalDateTime periodTo;
             @Schema(description = "Username of the Trainer", example = "Monica.Dobs")
             String trainerUsername;
-            @EnumConstraint(enumClass = TrainingTypeName.class, message = "Invalid training type")
-            @Schema(description = "Training type of training", example = "YOGA")
+            @Schema(description = "Training type of training", example = "{\"id\": 1, \"trainingType\": \"YOGA\"}")
             TrainingType trainingType;
         }
 
@@ -108,7 +106,7 @@ public enum TrainingDTO {
             LocalDateTime periodTo;
             @Schema(description = "Username of the Trainee", example = "Olga.Kurilenko")
             String traineeUsername;
-            @Schema(description = "Training type of training", example = "YOGA")
+            @Schema(description = "Training type of training", example = "{\"id\": 1, \"trainingType\": \"YOGA\"}")
             TrainingType trainingType;
         }
     }
@@ -123,9 +121,9 @@ public enum TrainingDTO {
             String trainingName;
             @Schema(description = "Date and time of training", example = "2024-10-02T19:00")
             LocalDateTime trainingDate;
-            @Schema(description = "Training type of training", example = "YOGA")
+            @Schema(description = "Training type of training", example = "{\"id\": 1, \"trainingType\": \"YOGA\"}")
             TrainingType trainingType;
-            @Schema(description = "Duration of training", example = "1000")
+            @Schema(description = "Duration of training", example = "PT1H")
             Duration trainingDuration;
             @Schema(description = "Username of the Trainer", example = "Monica.Dobs")
             String trainerUsername;
@@ -134,12 +132,13 @@ public enum TrainingDTO {
         @Data
         @AllArgsConstructor
         public static class TrainingProfileForTrainer implements TrainingName, TrainingDate, TrainingSpecial, TrainingDuration, TraineeName {
+            @Schema(description = "Training name", example = "Yoga morning class")
             String trainingName;
             @Schema(description = "Date and time of training", example = "2024-10-02T19:00")
             LocalDateTime trainingDate;
-            @Schema(description = "Training type of training", example = "YOGA")
+            @Schema(description = "Training type of training", example = "{\"id\": 1, \"trainingType\": \"YOGA\"}")
             TrainingType trainingType;
-            @Schema(description = "Duration of training", example = "1000")
+            @Schema(description = "Duration of training", example = "PT1H")
             Duration trainingDuration;
             @Schema(description = "Username of the Trainee", example = "Olga.Kurilenko")
             String traineeUsername;

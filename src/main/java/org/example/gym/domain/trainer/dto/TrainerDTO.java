@@ -46,6 +46,7 @@ public enum TrainerDTO {
         ;
 
         @Data
+        @AllArgsConstructor
         @Schema(description = "Request DTO contains details about the Trainer")
         public static class TrainerRegistration implements FirstName, LastName, Specialization {
             @NotBlank(message = "{first.name.required}")
@@ -60,6 +61,7 @@ public enum TrainerDTO {
         }
 
         @Data
+        @AllArgsConstructor
         @Schema(description = "Request DTO contains details about the Trainer")
         public static class TrainerUpdate implements Username, Password, FirstName, LastName, Specialization, Active {
             @NotBlank(message = "{username.required}")
@@ -75,7 +77,7 @@ public enum TrainerDTO {
             @Schema(description = "Last name of the Trainee", example = "Dobs")
             String lastName;
             @NotNull(message = "{trainer.specification.required}")
-            @Schema(description = "Training type specialization of the Trainer", example = "YOGA")
+            @Schema(description = "Training type specialization of the Trainer", example = "{\"id\": 1, \"trainingType\": \"YOGA\"}")
             TrainingType specialization;
             @NotNull(message = "{activity.status.required}")
             @Schema(description = "Activity status of the Trainer", example = "true")
@@ -94,11 +96,10 @@ public enum TrainerDTO {
             String firstName;
             @Schema(description = "Last name of the Trainee", example = "Dobs")
             String lastName;
-            @Schema(description = "Training type specialization of the Trainer", example = "YOGA")
+            @Schema(description = "Training type specialization of the Trainer", example = "{\"id\": 1, \"trainingType\": \"YOGA\"}")
             TrainingType specialization;
             @Schema(description = "Activity status of the Trainer", example = "true")
             boolean active;
-
             Set<TraineeDTO.Response.TraineeSummury> trainees;
         }
 
@@ -112,7 +113,7 @@ public enum TrainerDTO {
             String firstName;
             @Schema(description = "Last name of the Trainee", example = "Dobs")
             String lastName;
-            @Schema(description = "Training type specialization of the Trainer", example = "YOGA")
+            @Schema(description = "Training type specialization of the Trainer", example = "{\"id\": 1, \"trainingType\": \"YOGA\"}")
             TrainingType specialization;
         }
 

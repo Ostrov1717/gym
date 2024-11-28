@@ -3,16 +3,17 @@ package org.example.gym.domain.trainee.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.gym.common.exception.UserNotFoundException;
 import org.example.gym.domain.trainee.dto.TraineeDTO;
 import org.example.gym.domain.trainee.dto.TraineeMapper;
+import org.example.gym.domain.trainee.entity.Trainee;
+import org.example.gym.domain.trainee.metrics.TraineeMetrics;
+import org.example.gym.domain.trainee.repository.TraineeRepository;
 import org.example.gym.domain.trainer.dto.TrainerDTO;
 import org.example.gym.domain.trainer.dto.TrainerMapper;
-import org.example.gym.domain.user.dto.UserDTO;
-import org.example.gym.domain.trainee.entity.Trainee;
 import org.example.gym.domain.trainer.entity.Trainer;
+import org.example.gym.domain.user.dto.UserDTO;
 import org.example.gym.domain.user.entity.User;
-import org.example.gym.common.exception.UserNotFoundException;
-import org.example.gym.domain.trainee.repository.TraineeRepository;
 import org.example.gym.domain.user.service.UserService;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,7 @@ import java.util.Set;
 public class TraineeService {
     private final TraineeRepository traineeRepository;
     private final UserService userservice;
+    private final TraineeMetrics traineeMetrics;
 
     @Transactional
     public UserDTO.Response.Login create(String firstName, String lastName, String address, LocalDate dateOfBirth) {
@@ -34,10 +36,10 @@ public class TraineeService {
         Trainee trainee = new Trainee(new User(firstName, lastName, username, password, false), address, dateOfBirth);
         traineeRepository.save(trainee);
         log.info("Trainee created with username: {}", trainee.getUser().getUsername());
+        this.traineeMetrics.incrementNewTrainee();
         return new UserDTO.Response.Login(trainee.getUser().getUsername(), trainee.getUser().getPassword());
     }
 
-    @Transactional
     public TraineeDTO.Response.TraineeProfile findByUsername(String username, String password) {
         userservice.authenticate(username, password);
         log.info("Searching Trainee by username: {}", username);
@@ -46,7 +48,6 @@ public class TraineeService {
         return traineeProfile;
     }
 
-    @Transactional
     private Trainee findTraineeByUsername(String username) {
         return traineeRepository.findByUserUsername(username).orElseThrow(() -> new UserNotFoundException("Trainee with username: " + username + " not found."));
     }

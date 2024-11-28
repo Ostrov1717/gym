@@ -2,8 +2,8 @@ package org.example.gym.domain.trainee.dto;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.gym.common.exception.UserNotFoundException;
-import org.example.gym.domain.trainer.dto.TrainerDTO;
 import org.example.gym.domain.trainee.entity.Trainee;
+import org.example.gym.domain.trainer.dto.TrainerDTO;
 import org.example.gym.domain.trainer.entity.Trainer;
 
 import java.util.HashSet;

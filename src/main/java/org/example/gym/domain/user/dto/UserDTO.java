@@ -3,6 +3,7 @@ package org.example.gym.domain.user.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Value;
 
@@ -30,6 +31,7 @@ public enum UserDTO {
         ;
 
         @Data
+        @AllArgsConstructor
         @Schema(description = "Request DTO contains details about the User")
         public static class UserLogin implements Username, Password {
             @NotBlank(message = "{username.required}")
@@ -63,6 +65,7 @@ public enum UserDTO {
         }
 
         @Data
+        @AllArgsConstructor
         @Schema(description = "Request DTO contains details about the User")
         public static class ActivateOrDeactivate implements Username, Active {
             @NotBlank(message = "{username.required}")
