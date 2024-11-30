@@ -1,9 +1,8 @@
-package org.example.gym.services;
+package org.example.gym.domain.user.service;
 
 import org.example.gym.common.exception.AuthenticationException;
 import org.example.gym.domain.user.metrics.UserMetrics;
 import org.example.gym.domain.user.repository.UserRepository;
-import org.example.gym.domain.user.service.UserService;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -11,7 +10,8 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(classes = org.example.gym.App.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)

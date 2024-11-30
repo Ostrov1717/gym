@@ -1,4 +1,4 @@
-package org.example.gym.services;
+package org.example.gym.domain.trainee.services;
 
 import org.example.gym.common.exception.UserNotFoundException;
 import org.example.gym.domain.trainee.dto.TraineeDTO;

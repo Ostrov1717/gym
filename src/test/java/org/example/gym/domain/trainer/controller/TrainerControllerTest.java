@@ -32,7 +32,7 @@ import static org.example.gym.common.ApiUrls.*;
 import static org.example.gym.common.TestConstants.*;
 
 @WebMvcTest(value = TrainerController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = MetricsFilter.class))
-class TrainerControllerTest {
+public class TrainerControllerTest {
     @Autowired
     private MockMvc mockMvc;
 

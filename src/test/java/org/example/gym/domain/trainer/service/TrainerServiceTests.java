@@ -1,4 +1,4 @@
-package org.example.gym.services;
+package org.example.gym.domain.trainer.service;
 
 
 import org.example.gym.common.exception.WrongTrainingTypeException;
