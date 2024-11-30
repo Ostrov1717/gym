@@ -3,6 +3,7 @@ package org.example.gym.common.exception;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -37,5 +38,10 @@ public class ProjectExceptionHandler {
     public ResponseEntity<String> handleWrongTrainingTypeException(WrongTrainingTypeException ex) {
         log.error("Wrong training type error occurred: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(ex.getMessage());
+    }
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<String> handleBadCredentials(BadCredentialsException ex) {
+        log.error("Credential error occurred: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
     }
 }

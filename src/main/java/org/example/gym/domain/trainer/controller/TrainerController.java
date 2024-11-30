@@ -9,6 +9,9 @@ import org.example.gym.domain.training.entity.TrainingType;
 import org.example.gym.domain.training.entity.TrainingTypeName;
 import org.example.gym.domain.user.dto.UserDTO;
 import org.example.gym.domain.user.service.UserService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,35 +40,40 @@ public class TrainerController {
 
     //  8. Get Trainer Profile (GET method)
     @GetMapping(GET_TRAINER_PROFILE)
-    public TrainerDTO.Response.TrainerProfile getTrainerProfile(@Valid @ModelAttribute UserDTO.Request.UserLogin dto) {
-        log.info("GET request to " + GET_TRAINER_PROFILE + " with trainer username={}", dto.getUsername());
-        return trainerService.findByUsername(dto.getUsername(), dto.getPassword());
+    public TrainerDTO.Response.TrainerProfile getTrainerProfile() {
+        log.info("GET request to " + GET_TRAINER_PROFILE + " with trainer username={}", getAuthenticatedUsername());
+        return trainerService.findByUsername(getAuthenticatedUsername());
+    }
+
+    private String getAuthenticatedUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return ((UserDetails) authentication.getPrincipal()).getUsername();
     }
 
     //    9. Update Trainer Profile (PUT method)
     @PutMapping(UPDATE_TRAINER)
     public TrainerDTO.Response.TrainerProfile updateTrainerProfile(@Valid @RequestBody TrainerDTO.Request.TrainerUpdate dto) {
         log.info("PUT request to " + UPDATE_TRAINER + " trainer={} with new details: {} {}, specialization={}",
-                dto.getUsername(), dto.getFirstName(), dto.getLastName(), dto.getSpecialization());
-        return trainerService.update(dto.getFirstName(), dto.getLastName(), dto.getUsername(), dto.getPassword(),
+                getAuthenticatedUsername(), dto.getFirstName(), dto.getLastName(), dto.getSpecialization());
+        return trainerService.update(dto.getFirstName(), dto.getLastName(), getAuthenticatedUsername(),
                 TrainingTypeName.valueOf(dto.getSpecialization().getTrainingType()), dto.isActive());
     }
 
     //    10. Get not assigned on trainee active trainers. (GET method)
     @GetMapping(GET_NOT_ASSIGN_TRAINERS)
-    public Set<TrainerDTO.Response.TrainerSummury> getNotAssingTrainers(@Valid @ModelAttribute UserDTO.Request.UserLogin dto) {
-        log.info("GET request to " + GET_NOT_ASSIGN_TRAINERS + " from trainee username={}", dto.getUsername());
-        return trainerService.getAvailableTrainers(dto.getUsername(), dto.getPassword());
+    public Set<TrainerDTO.Response.TrainerSummury> getNotAssingTrainers() {
+        log.info("GET request to " + GET_NOT_ASSIGN_TRAINERS + " from trainee username={}", getAuthenticatedUsername());
+        return trainerService.getAvailableTrainers(getAuthenticatedUsername());
     }
 
     //    16. Activate/De-Activate Trainer (PATCH method)
     @PatchMapping(UPDATE_TRAINER_STATUS)
     public void activateOrDeactivateTrainer(@Valid @RequestBody UserDTO.Request.ActivateOrDeactivate dto) {
-        log.info("PATCH request to " + UPDATE_TRAINER_STATUS + " trainer={} with updates active status on: {}", dto.getUsername(), dto.isActive());
+        log.info("PATCH request to " + UPDATE_TRAINER_STATUS + " trainer={} with updates active status on: {}", getAuthenticatedUsername(), dto.isActive());
         if (dto.isActive()) {
-            userService.activate(dto.getUsername(), dto.getPassword());
+            userService.activate(getAuthenticatedUsername());
         } else {
-            userService.deactivate(dto.getUsername(), dto.getPassword());
+            userService.deactivate(getAuthenticatedUsername());
         }
     }
 

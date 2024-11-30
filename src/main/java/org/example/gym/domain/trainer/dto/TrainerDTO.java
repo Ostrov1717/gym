@@ -18,10 +18,6 @@ public enum TrainerDTO {
         String getUsername();
     }
 
-    private interface Password {
-        String getPassword();
-    }
-
     private interface FirstName {
         String getFirstName();
     }
@@ -63,13 +59,7 @@ public enum TrainerDTO {
         @Data
         @AllArgsConstructor
         @Schema(description = "Request DTO contains details about the Trainer")
-        public static class TrainerUpdate implements Username, Password, FirstName, LastName, Specialization, Active {
-            @NotBlank(message = "{username.required}")
-            @Schema(description = "Username of the Trainer", example = "Monica.Dobs")
-            String username;
-            @NotBlank(message = "{password.required}")
-            @Schema(description = "Password of the Trainer", example = "55555")
-            String password;
+        public static class TrainerUpdate implements FirstName, LastName, Specialization, Active {
             @NotBlank(message = "{first.name.required}")
             @Schema(description = "First name of the Trainer", example = "Monica")
             String firstName;
