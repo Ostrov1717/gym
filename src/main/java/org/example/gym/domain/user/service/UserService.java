@@ -1,45 +1,45 @@
 package org.example.gym.domain.user.service;
 
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.gym.common.exception.AuthenticationException;
 import org.example.gym.common.exception.UserNotFoundException;
+import org.example.gym.domain.user.dto.JwtAuthenticationResponse;
 import org.example.gym.domain.user.entity.User;
-import org.example.gym.domain.user.metrics.UserMetrics;
 import org.example.gym.domain.user.repository.UserRepository;
+import org.example.gym.domain.user.security.JWTService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JWTService jwtService;
 
-    private final UserMetrics userMetrics;
-
-    public boolean authenticate(String username, String password) {
-        log.info("Attempting to authenticate Trainee with username: {}", username);
-        boolean authenticated = userRepository.findByUsernameAndPassword(username, password).isPresent();
-        if (!authenticated) {
-            log.warn("Authentication failed for username: {}", username);
-            userMetrics.incrementAuthenticationFailed(username);
-            throw new AuthenticationException("Invalid username or password");
-        }
-        log.info("Authentication successful for username: {}", username);
-        userMetrics.incrementAuthenticationSuccess(username);
-        return true;
+    public JwtAuthenticationResponse signin(String username) {
+        var user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new AuthenticationException("Invalid username or password"));
+        var jwt = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
+        JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
+        jwtAuthenticationResponse.setToken(jwt);
+        jwtAuthenticationResponse.setRefreshtoken(refreshToken);
+        return jwtAuthenticationResponse;
     }
 
     @Transactional
-    public void changePassword(String username, String oldPassword, String newPassword) {
-        authenticate(username, oldPassword);
+    public void changePassword(String username, String newPassword) {
         log.info("Changing password of User with username: {}", username);
         User user = findUserByUsername(username);
-        user.setPassword(newPassword);
+        user.setPassword(passwordEncoder.encode(newPassword));
         log.info("Password successfully changed");
     }
 
@@ -55,8 +55,7 @@ public class UserService {
     }
 
     @Transactional
-    public boolean deactivate(String username, String password) {
-        authenticate(username, password);
+    public boolean deactivate(String username) {
         log.info("Deactivating User with username: {}", username);
         boolean deactivated = updateActiveStatus(username, false);
         log.info("User with username: {} deactivated", username);
@@ -64,8 +63,7 @@ public class UserService {
     }
 
     @Transactional
-    public boolean activate(String username, String password) {
-        authenticate(username, password);
+    public boolean activate(String username) {
         log.info("Activating User with username: {}", username);
         boolean activated = updateActiveStatus(username, true);
         log.info("User with username: {} activated", username);
