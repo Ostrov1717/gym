@@ -23,6 +23,9 @@ public final class ApiUrls {
     public static final String GET_TRAINER_TRAININGS = "/trainer";
     public static final String CREATE_TRAINING = "/create";
     public static final String TRAINING_TYPES = "/trainings-type";
+    public static final String WORKING_HOURS = "/working-hours";
+    public static final String ALL_TRAININGS = "/all-trainings";
+    public static final String CLIENT_URL = "/api/trainings";
 
     private ApiUrls() {
     }

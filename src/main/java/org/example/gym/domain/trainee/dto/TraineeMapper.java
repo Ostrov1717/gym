@@ -16,7 +16,7 @@ public class TraineeMapper {
             log.warn("Provided Trainee object is null, returning null.");
             throw new UserNotFoundException("Provided in mapper Trainee object is null, returning null.");
         }
-        log.debug("Mapping Trainee [{}] to TraineeProfile.", trainee);
+        log.debug("Mapping Trainee [{}] to TraineeProfile.", trainee.getUser().getUsername());
         Set<TrainerDTO.Response.TrainerSummury> trainers = new HashSet<>();
         for (Trainer trainer : trainee.getTrainers()) {
             trainers.add(new TrainerDTO.Response.TrainerSummury(trainer.getUser().getFirstName(),
@@ -24,9 +24,6 @@ public class TraineeMapper {
         }
         TraineeDTO.Response.TraineeProfile traineeProfile = new TraineeDTO.Response.TraineeProfile(trainee.getUser().getFirstName(),
                 trainee.getUser().getLastName(), trainee.getDateOfBirth(), trainee.getAddress(), trainee.getUser().isActive(), trainers);
-        log.debug("Mapped basic user info: firstName [{}], lastName [{}], active [{}].",
-                traineeProfile.getFirstName(), traineeProfile.getLastName(),
-                traineeProfile.isActive());
         return traineeProfile;
     }
 
@@ -35,7 +32,7 @@ public class TraineeMapper {
             log.warn("Provided Trainee object is null, returning null.");
             throw new UserNotFoundException("Provided in mapper Trainee object is null, returning null.");
         }
-        log.debug("Mapping Trainee [{}] to TraineeProfile.", trainee);
+        log.debug("Mapping Trainee [{}] to TraineeProfile.", trainee.getUser().getUsername());
         Set<TrainerDTO.Response.TrainerSummury> trainers = new HashSet<>();
         for (Trainer trainer : trainee.getTrainers()) {
             trainers.add(new TrainerDTO.Response.TrainerSummury(trainer.getUser().getFirstName(),

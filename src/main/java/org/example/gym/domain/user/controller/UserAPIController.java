@@ -25,8 +25,8 @@ public class UserAPIController {
     @GetMapping(USER_LOGIN)
     public void login() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        log.info("GET request to /login with username={}, password:{}", userDetails.getUsername(), userDetails.getPassword());
-        log.info("GET request successful. Username authenticated.");
+        log.info("GET request to /login with username={}", userDetails.getUsername());
+        log.info("Request successful. Username authenticated.");
     }
 
     //    4. Change Login (PUT method)
@@ -35,12 +35,13 @@ public class UserAPIController {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         log.info("PUT request to /change-login username={} with new password.", userDetails.getUsername());
         userService.changePassword(userDetails.getUsername(), dto.getNewPassword());
+        log.info("Request successful. Password is changed.");
     }
 
     @PostMapping(USER_LOGIN)
     public JwtAuthenticationResponse takeToken() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        log.info("Try to take token, username:{}, password:{}:", userDetails.getUsername(), userDetails.getPassword());
+        log.info("Try to take token, username:{}", userDetails.getUsername());
         return userService.signin(userDetails.getUsername());
     }
 }

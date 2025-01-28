@@ -52,7 +52,7 @@ public class MetricsFilter implements Filter {
             chain.doFilter(servletRequest, servletResponse);
         } finally {
             sample.stop(requestTimer);
-            log.info("Request processing time: {} ms", meterRegistry.get("HTTP request timer").timer().mean(TimeUnit.MILLISECONDS));
+//            log.info("Request processing time: {} ms", meterRegistry.get("HTTP request timer").timer().mean(TimeUnit.MILLISECONDS));
         }
     }
 

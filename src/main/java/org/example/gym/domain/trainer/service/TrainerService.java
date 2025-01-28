@@ -29,7 +29,6 @@ public class TrainerService {
     private final TrainerRepository trainerRepository;
     private final TrainingTypeRepository trainingTypeRepository;
     private final UserService userService;
-
     private final PasswordEncoder passwordEncoder;
 
     @Transactional

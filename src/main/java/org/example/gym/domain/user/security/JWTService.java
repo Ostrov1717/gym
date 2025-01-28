@@ -31,14 +31,14 @@ public class JWTService {
                 .setExpiration(new Date(System.currentTimeMillis() + jwtProperties.getTokenValidity()))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
-        log.info("Token:{}", token);
+        log.info("Token generated.");
         return token;
     }
 
     public String generateRefreshToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return Jwts.builder().setClaims(extraClaims).setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + jwtProperties.getTokenValidity() * 7))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtProperties.getTokenValidity() * 8))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -60,7 +60,6 @@ public class JWTService {
     }
 
     private Claims extractAllClaims(String token) {
-        log.info("JWTservice, extractAllClaims token:{}", token);
         return Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token).getBody();
     }
 
@@ -70,6 +69,7 @@ public class JWTService {
     }
 
     private boolean isTokenExpired(String token) {
+        log.info("Token expiration date:{}", extractClaim(token,Claims::getExpiration));
         return extractClaim(token, Claims::getExpiration).before(new Date());
     }
 }

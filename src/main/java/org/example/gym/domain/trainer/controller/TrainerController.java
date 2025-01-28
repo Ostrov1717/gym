@@ -4,11 +4,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.gym.domain.trainer.dto.TrainerDTO;
+import org.example.gym.domain.trainer.client.ServiceTrainerWorkingHours;
 import org.example.gym.domain.trainer.service.TrainerService;
 import org.example.gym.domain.training.entity.TrainingType;
 import org.example.gym.domain.training.entity.TrainingTypeName;
 import org.example.gym.domain.user.dto.UserDTO;
 import org.example.gym.domain.user.service.UserService;
+import org.example.shareddto.TrainerWorkingHoursDTO;
+import org.slf4j.MDC;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,6 +31,7 @@ import static org.example.gym.common.ApiUrls.*;
 public class TrainerController {
     private final TrainerService trainerService;
     private final UserService userService;
+    private final ServiceTrainerWorkingHours serviceTrainerWorkingHours;
 
     //    2. Trainer Registration (POST method)
     @PostMapping(REGISTER_TRAINER)
@@ -82,5 +86,13 @@ public class TrainerController {
     public List<TrainingType> getTrainingTypes() {
         log.info("GET request to /types for training types in gym");
         return trainerService.trainingTypes();
+    }
+
+    // Get Trainer yearly working hours
+    @GetMapping(WORKING_HOURS)
+    public TrainerWorkingHoursDTO getTrainerWorkingHours() {
+        log.info("GET request to " + WORKING_HOURS + " with trainer username={}", getAuthenticatedUsername());
+        log.info("Request to microservice");
+        return serviceTrainerWorkingHours.getMonthlyHours(getAuthenticatedUsername(), MDC.get("transactionId"));
     }
 }

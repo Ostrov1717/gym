@@ -37,7 +37,6 @@ public class BruteForceAuthenticationProvider implements AuthenticationProvider 
 
         User user = (User) userDetailsService.loadUserByUsername(username);
 
-        // Verify user credentials
         if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
             bruteForceProtectionService.loginFailed(username);
             throw new BadCredentialsException("Invalid username or password.");

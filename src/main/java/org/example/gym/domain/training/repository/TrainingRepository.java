@@ -10,30 +10,31 @@ import java.time.LocalDateTime;
 import java.util.List;
 @Repository
 public interface TrainingRepository extends JpaRepository<Training, Long> {
-    @Query("SELECT t FROM Training t " +
-            "JOIN t.trainer trainer " +
-            "JOIN t.trainee trainee " +
-            "WHERE trainer.user.username = :username " +
-            "AND (t.trainingDate BETWEEN :fromDate AND :toDate) " +
-            "AND (trainee.user.username = :traineeName OR :traineeName IS NULL) " +
-            "ORDER BY t.trainingDate DESC")
+    @Query(value="""
+        SELECT t
+        FROM training_list t
+        WHERE (t.trainer_username = :username)
+          AND (:fromDate IS NULL OR t.training_date >= :fromDate)
+          AND (:toDate IS NULL OR t.training_date <= :toDate)
+          AND (:traineeName IS NULL OR t.trainee_username LIKE %:traineeName%)
+    """, nativeQuery = true)
     List<Training> findTrainingsByTrainerAndCriteria(
             @Param("username") String username,
             @Param("fromDate") LocalDateTime fromDate,
             @Param("toDate") LocalDateTime toDate,
             @Param("traineeName") String traineeName);
 
-    @Query("SELECT tr FROM Training tr " +
-            "JOIN tr.trainee t " +
-            "JOIN tr.trainer trn " +
-            "JOIN tr.trainingType type " +
-            "WHERE t.user.username = :username " +
-            "AND (tr.trainingDate >= :periodFrom) " +
-            "AND (tr.trainingDate <= :periodTo) " +
-            "AND (:trainerName IS NULL OR trn.user.username LIKE %:trainerName%)")
+    @Query(value="""
+        SELECT t
+        FROM training_list t
+        WHERE (t.trainee_username = :username)
+          AND (:fromDate IS NULL OR t.training_date >= :fromDate)
+          AND (:toDate IS NULL OR t.training_date <= :toDate)
+          AND (:trainerName IS NULL OR t.trainer_username LIKE %:trainerName%)
+    """,nativeQuery = true)
     List<Training> findTrainingsByTraineeAndCriteria(
             @Param("username") String username,
-            @Param("periodFrom") LocalDateTime periodFrom,
-            @Param("periodTo") LocalDateTime periodTo,
+            @Param("fromDate") LocalDateTime periodFrom,
+            @Param("toDate") LocalDateTime periodTo,
             @Param("trainerName") String trainerName);
 }

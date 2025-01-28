@@ -17,16 +17,13 @@ public class TrainerMapper {
             log.warn("Provided Trainer object is null, returning null.");
             throw new UserNotFoundException("Provided in mapper Trainer object is null, returning null.");
         }
-        log.debug("Mapping Trainer [{}] to TrainerProfile.", trainer);
+        log.debug("Mapping Trainer [{}] to TrainerProfile.", trainer.getUser().getUsername());
         Set<TraineeDTO.Response.TraineeSummury> trainees = new HashSet<>();
         for (Trainee trainee : trainer.getTrainees()) {
             trainees.add(new TraineeDTO.Response.TraineeSummury(trainee.getUser().getUsername(), trainee.getUser().getFirstName(), trainee.getUser().getLastName()));
         }
         TrainerDTO.Response.TrainerProfile trainerProfile = new TrainerDTO.Response.TrainerProfile(trainer.getUser().getFirstName(),
                 trainer.getUser().getLastName(), trainer.getSpecialization(), trainer.getUser().isActive(), trainees);
-        log.debug("Mapped basic user info: firstName [{}], lastName [{}], active [{}].",
-                trainerProfile.getFirstName(), trainerProfile.getFirstName(),
-                trainerProfile.isActive());
         return trainerProfile;
     }
 

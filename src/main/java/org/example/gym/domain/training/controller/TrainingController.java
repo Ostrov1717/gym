@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.gym.common.utils.DurationEditor;
+import org.example.shareddto.TrainerTrainingDTO;
 import org.example.gym.domain.training.dto.TrainingDTO;
 import org.example.gym.domain.training.service.TrainingService;
 import org.springframework.validation.annotation.Validated;
@@ -46,6 +47,11 @@ public class TrainingController {
         log.info("POST request to" + CREATE_TRAINING + " for creating training for trainee={} with details: {}, {}, {}, trainer name={}",
                 dto.getTraineeUsername(), dto.getTrainingName(), dto.getTrainingDate(), dto.getTrainingDuration(), dto.getTrainerUsername());
         trainingService.create(dto.getTraineeUsername(), dto.getTrainerUsername(), dto.getTrainingName(), dto.getTrainingDate(), dto.getTrainingDuration());
+    }
+    @GetMapping(ALL_TRAININGS)
+    public List<TrainerTrainingDTO> allTraining(){
+        log.info("GET request from microservice for all trainings");
+        return trainingService.findAllTrainings();
     }
 
     @InitBinder

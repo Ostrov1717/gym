@@ -34,14 +34,22 @@ public class ProjectExceptionHandler {
         ex.getBindingResult().getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
+
     @ExceptionHandler(WrongTrainingTypeException.class)
     public ResponseEntity<String> handleWrongTrainingTypeException(WrongTrainingTypeException ex) {
         log.error("Wrong training type error occurred: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(ex.getMessage());
     }
+
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<String> handleBadCredentials(BadCredentialsException ex) {
         log.error("Credential error occurred: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(ServiceUnavailableException.class)
+    public ResponseEntity<String> feignClientException(ServiceUnavailableException ex) {
+        log.error(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(ex.getMessage());
     }
 }

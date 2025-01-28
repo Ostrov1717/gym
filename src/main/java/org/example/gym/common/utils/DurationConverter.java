@@ -15,7 +15,6 @@ public class DurationConverter implements AttributeConverter<Duration, Long> {
             throw new IllegalArgumentException("Duration is null; returning null for database column.");
         }
         long seconds = duration.getSeconds();
-        log.debug("Converting Duration [{}] to seconds [{}] for database column.", duration, seconds);
         return seconds;
     }
 
@@ -26,7 +25,6 @@ public class DurationConverter implements AttributeConverter<Duration, Long> {
             throw new IllegalArgumentException("Database column is null; returning null for Duration.");
         }
         Duration duration = Duration.ofSeconds(seconds);
-        log.debug("Converting seconds [{}] from database column to Duration [{}].", seconds, duration);
         return duration;
     }
 

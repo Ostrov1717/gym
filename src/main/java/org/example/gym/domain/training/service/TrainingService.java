@@ -1,20 +1,23 @@
 package org.example.gym.domain.training.service;
 
+import jakarta.transaction.Transactional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.gym.common.exception.UserNotFoundException;
+import org.example.gym.domain.trainee.entity.Trainee;
+import org.example.gym.domain.trainee.repository.TraineeRepository;
+import org.example.gym.domain.trainer.client.ServiceTrainerWorkingHours;
+import org.example.gym.domain.trainer.entity.Trainer;
+import org.example.gym.domain.trainer.repository.TrainerRepository;
 import org.example.gym.domain.training.dto.TrainingDTO;
 import org.example.gym.domain.training.dto.TrainingMapper;
-import org.example.gym.domain.trainee.entity.Trainee;
-import org.example.gym.domain.trainer.entity.Trainer;
 import org.example.gym.domain.training.entity.Training;
 import org.example.gym.domain.training.entity.TrainingType;
-import org.example.gym.common.exception.UserNotFoundException;
-import org.example.gym.domain.trainee.repository.TraineeRepository;
-import org.example.gym.domain.trainer.repository.TrainerRepository;
 import org.example.gym.domain.training.repository.TrainingRepository;
+import org.example.shareddto.TrainerTrainingDTO;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
-import jakarta.transaction.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -27,6 +30,7 @@ public class TrainingService {
     private final TrainingRepository trainingRepository;
     private final TraineeRepository traineeRepository;
     private final TrainerRepository trainerRepository;
+    private final ServiceTrainerWorkingHours serviceTrainerWorkingHours;
 
     @Transactional
     public void create(@NonNull String traineeUsername, @NonNull String trainerUsername, @NonNull String trainingName, @NonNull LocalDateTime trainingDate, @NonNull Duration duration) {
@@ -43,7 +47,10 @@ public class TrainingService {
         TrainingType trainingType = trainer.getSpecialization();
         Training training = new Training(trainee, trainer, trainingName, trainingType, trainingDate, duration);
         log.info("Training has been created: name={}, date={}", trainingName, trainingDate);
+        log.info("Training record was transferred to microservice");
         trainingRepository.save(training);
+        serviceTrainerWorkingHours.addTraining(new TrainerTrainingDTO(trainerUsername, trainer.getUser().getFirstName(),
+                trainer.getUser().getLastName(), trainer.getUser().isActive(), trainingDate, duration), MDC.get("transactionId"));
     }
 
     @Transactional
@@ -60,5 +67,11 @@ public class TrainingService {
         List<Training> trainings = trainingRepository.findTrainingsByTraineeAndCriteria(traineeUsername, fromDate, toDate, trainerName);
         log.info("Found {} trainings for trainee: {}", trainings.size(), traineeUsername);
         return TrainingMapper.toListForTrainee(trainings);
+    }
+
+    public List<TrainerTrainingDTO> findAllTrainings() {
+        List<TrainerTrainingDTO> trainingRecordDTOList = trainerRepository.findTrainerTrainings();
+        log.info("Return list of all trainings to microservice, {} trainings", trainingRecordDTOList.size());
+        return trainingRecordDTOList;
     }
 }
